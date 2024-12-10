@@ -1,0 +1,16 @@
+#.vscode/
+.vscode/
+
+# generated files excludes
+*.qws
+*.rpt
+
+# generated folders excludes
+*/db/
+*/incremental_db/
+*/simulation/
+*/timing/
+*/testbench/
+incremental_db/
+db/
+output_files/
