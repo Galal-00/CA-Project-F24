@@ -1,0 +1,34 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY EPC IS
+    PORT (
+        CLK : IN STD_LOGIC;
+        RST : IN STD_LOGIC;
+
+        Store_EN : IN STD_LOGIC;
+        WR_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+        EPC_data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+    );
+END ENTITY EPC;
+
+ARCHITECTURE EPC_arch OF EPC IS
+
+    SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
+
+BEGIN
+
+    PROCESS (CLK, RST)
+    BEGIN
+        IF RST = '1' THEN
+            data <= (OTHERS => '0');
+        ELSIF falling_edge(CLK) AND Store_EN = '1' THEN
+            data <= WR_data;
+        END IF;
+    END PROCESS;
+
+    EPC_data <= data;
+
+END ARCHITECTURE;
