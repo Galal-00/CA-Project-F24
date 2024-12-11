@@ -5,6 +5,9 @@ USE ieee.math_real.ALL;
 
 ENTITY EX IS
     PORT (
+        Clk : IN STD_ULOGIC;
+        Rst : IN STD_ULOGIC;
+       
         -- Input control signals
         MemRead : IN STD_ULOGIC;
         MemWrite : IN STD_ULOGIC;
@@ -26,6 +29,7 @@ ENTITY EX IS
         InSig : IN STD_ULOGIC;
         Ex_Flush : IN STD_ULOGIC;
         ALU_OP : IN STD_ULOGIC_VECTOR(1 DOWNTO 0); -- change its size later!!
+        Is_RET_RTI : IN STD_ULOGIC;
 
         -- Input control signals from next stages
         RegWrite_Ex_Mem : IN STD_ULOGIC;
@@ -33,14 +37,14 @@ ENTITY EX IS
         Update_Flags : IN STD_ULOGIC; -- from EX/MEM reg
 
         -- Input data 
-        ReadData1 : IN STD_ULOGIC_VECTOR(15 DOWNTO 0); -- Galal has them 8 bits for some reason
+        ReadData1 : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
         ReadData2 : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
         IMM : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
         Rdst : IN STD_ULOGIC_VECTOR(2 DOWNTO 0);
         Rsrc1 : IN STD_ULOGIC_VECTOR(2 DOWNTO 0);
         Rsrc2 : IN STD_ULOGIC_VECTOR(2 DOWNTO 0);
         OpCode : IN STD_ULOGIC_VECTOR(4 DOWNTO 0);
-        Pc_inc : IN : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
+        PC_inc : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
 
         -- input data forwarded from the next stages registers
         Fwd_Ex_Mem : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
@@ -61,28 +65,31 @@ ENTITY EX IS
         ALU_Result : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
         PC_inc_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
         Flags_Out : OUT STD_ULOGIC_VECTOR(2 DOWNTO 0); -- from flag reg
-        ReadData1_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0); -- Galal has them 8 bits for some reason
+        ReadData1_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
         Rdst_Out : OUT STD_ULOGIC_VECTOR(2 DOWNTO 0);
         OpCode_Out : OUT STD_ULOGIC_VECTOR(4 DOWNTO 0);
         IN_Port_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
         SP_inc_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
 
         -- Output control signals
-        Flush : Jump : OUT STD_ULOGIC; -- goes to flush unit
+        Flush : OUT STD_ULOGIC; -- goes to flush unit
         MemRead_Out : OUT STD_ULOGIC;
         MemWrite_Out : OUT STD_ULOGIC;
         MemToReg_Out : OUT STD_ULOGIC;
         DM_Addr_Out : OUT STD_ULOGIC;
         CallSig_Out : OUT STD_ULOGIC;
         Add_Flags_Out : OUT STD_ULOGIC;
-        SP_DEC_Out: OUT STD_ULOGIC;
-        SP_EN_Out: OUT STD_ULOGIC;
-        OutSig: OUT  STD_ULOGIC;
-        Is_RET_RTI : OUT STD_ULOGIC;
-        Update_Flags_Out: OUT STD_ULOGIC; -- from EX/MEM reg
+        SP_DEC_Out : OUT STD_ULOGIC;
+        SP_EN_Out : OUT STD_ULOGIC;
         OutSig_Out : OUT STD_ULOGIC;
-        InSig_Out : OUT STD_ULOGIC;
-
-
+        Is_RET_RTI_Out : OUT STD_ULOGIC;
+        Update_Flags_Out : OUT STD_ULOGIC; -- from EX/MEM reg
+        InSig_Out : OUT STD_ULOGIC
     );
 END ENTITY EX;
+
+ARCHITECTURE Rtl OF EX IS
+  
+BEGIN
+ 
+END ARCHITECTURE;
