@@ -3,25 +3,22 @@ USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 USE ieee.math_real.ALL;
 
--- NOP  00000      
--- HLT  00001      
--- SETC  00010      
--- NOT  00011 Rsrc1  Rdst   
--- INC  00100 Rsrc1  Rdst   
--- OUT  00101 Rsrc1     
--- IN  00110   Rdst   
+-- ALU operations
 
--- MOV  00111 Rsrc1  Rdst   
+--Two Operands 
+-- MOV  00111 Rsrc1  Rdst   -- alu result is set tot the operand1 value
 -- ADD  01000 Rsrc1 Rsrc2 Rdst   
 -- SUB  01001 Rsrc1 Rsrc2 Rdst   
 -- AND  01010 Rsrc1 Rsrc2 Rdst   
 -- IADD Imm 01011 Rsrc1  Rdst 
 
--- PUSH  01100 Rsrc1     
--- POP  01101   Rdst   
--- LDM Imm 01110   Rdst   
--- LDD Offset 01111 Rsrc1 Rdst
--- STD  Offset 10000 Rsrc1 Rsrc2  
+--Memory Operations 
+-- PUSH  01100 Rsrc1   -- push and pop are considered a NOP in the ALU
+-- POP  01101   Rdst   -- push and pop are considered a NOP in the ALU
+-- LDM  01110 Imm  Rdst   -- alu result is set tot the immediate value (operand2)
+-- LDD  01111 Offset Rsrc1 Rdst
+-- STD  10000 Offset Rsrc1 Rsrc2  
+
 ENTITY ALU IS
     PORT (
         -- Inputs
@@ -45,10 +42,11 @@ BEGIN
     temp2 <= '0' & operand2;
 
     tempRes <= temp1 WHEN OpCode = "00111" ELSE -- Mov
-        STD_LOGIC_VECTOR(unsigned(temp1) + unsigned(temp2)) WHEN OpCode = "01000" OR OpCode = "01011" ELSE -- ADD
+        STD_LOGIC_VECTOR(unsigned(temp1) + unsigned(temp2)) WHEN OpCode = "01000" OR OpCode = "01011" OR OpCode ="01111"  OR OpCode = "10000"  ELSE -- ADD,IADD,LDD,STD
         STD_LOGIC_VECTOR(unsigned(temp1) - unsigned(temp2)) WHEN OpCode = "01001" ELSE -- SUB
         temp1 AND temp2 WHEN OpCode = "01010" ELSE -- AND
-        (OTHERS => '0'); -- Default case
+        temp2 WHEN OpCode = "01110" ELSE -- LDM
+        tempRes; -- Default case
 
     -- Assign the result to ALU_Result
     ALU_Result <= tempRes(15 DOWNTO 0);
