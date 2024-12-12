@@ -31,7 +31,7 @@ ENTITY ID IS
         --  2) EX stage
         ALU_SRC1 : OUT STD_LOGIC := '0';
         ALU_SRC2 : OUT STD_LOGIC := '0';
-        ALU_OP : OUT STD_LOGIC := '0';
+        ALU_OP : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
         JUMP_UNCOND : OUT STD_LOGIC := '0';
         BRANCH : OUT STD_LOGIC := '0';
         JUMP_COND : OUT STD_LOGIC_VECTOR(1 DOWNTO 0) := (OTHERS => '0');
@@ -42,7 +42,7 @@ ENTITY ID IS
         --  3) MEM stage
         MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         --  4) WB stage
-        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
+        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
         -- o/p data signals
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
         PC_INC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
@@ -52,7 +52,7 @@ ENTITY ID IS
         Rsrc2_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
         Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
         IMM_OFFSET_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-        OP_CODE_OUT : OUT IN STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
+        OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
     );
 END ENTITY ID;
 
@@ -75,7 +75,7 @@ ARCHITECTURE ID_arch OF ID IS
             -- Exceptions and Interrupts (IF stage)
             IF_SIGNALS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
             -- Pipeline Control Signals (EX Stage)
-            EX_SIGNALS : OUT STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+            EX_SIGNALS : OUT STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
             -- Pipeline Control Signals (MEM Stage)
             MEM_SIGNALS : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
             -- Pipeline Control Signals (WB Stage)
@@ -124,11 +124,11 @@ ARCHITECTURE ID_arch OF ID IS
             -- I/P flush, stall, pipeline control signals
             ID_EX_FLUSH : IN STD_LOGIC;
             STALL : IN STD_LOGIC;
-            EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(14 DOWNTO 0);
+            EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(18 DOWNTO 0);
             MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
             WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             -- Pipeline Control Signals (EX Stage)
-            EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+            EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
             -- Pipeline Control Signals (MEM Stage)
             MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
             -- Pipeline Control Signals (WB Stage)
@@ -141,7 +141,7 @@ ARCHITECTURE ID_arch OF ID IS
             CLK : IN STD_LOGIC;
             RST : IN STD_LOGIC;
             -- Input control signals
-            EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(14 DOWNTO 0);
+            EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(18 DOWNTO 0);
             MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
             WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             -- Input data signals
@@ -153,15 +153,15 @@ ARCHITECTURE ID_arch OF ID IS
             Rsrc2_IN : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
             Rdst_IN : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
             IMM_OFFSET_IN : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            OP_CODE_IN : IN IN STD_LOGIC_VECTOR(4 DOWNTO 0)
+            OP_CODE_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
             -- Output control signals:
             --  1) EX stage
-            EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+            EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
             --  2) MEM stage
             MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
             --  3) WB stage
-            WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
+            WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
             -- Output data signals
             PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
             PC_INC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
@@ -171,11 +171,11 @@ ARCHITECTURE ID_arch OF ID IS
             Rsrc2_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
             Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
             IMM_OFFSET_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-            OP_CODE_OUT : OUT IN STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
+            OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
         );
     END COMPONENT;
 
-    SIGNAL DUMMY_RSRC1_EN, DUMMY_RSRC2_EN;
+    SIGNAL DUMMY_RSRC1_EN, DUMMY_RSRC2_EN : STD_LOGIC;
     SIGNAL DUMMY_ID_EX_FLUSH, DUMMY_STALL : STD_LOGIC := '0';
 
     -- EPC inputs
@@ -184,22 +184,19 @@ ARCHITECTURE ID_arch OF ID IS
     SIGNAL EXP_PC : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 
     -- ID_FLUSH_MUX inputs
-    SIGNAL ID_FLUSH_MUX_EX_SIGNALS_IN : STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL ID_FLUSH_MUX_EX_SIGNALS_IN : STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ID_FLUSH_MUX_MEM_SIGNALS_IN : STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ID_FLUSH_MUX_WB_SIGNALS_IN : STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
 
     -- ID_EX Register inputs
-    SIGNAL ID_EX_REG_EX_SIGNALS_IN : STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL ID_EX_REG_EX_SIGNALS_IN : STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ID_EX_REG_MEM_SIGNALS_IN : STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ID_EX_REG_WB_SIGNALS_IN : STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL ID_EX_PC_IN, ID_EX_PC_INC_IN, ID_EX_Rdata1_IN, ID_EX_Rdata2_IN : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL ID_EX_Rsrc1_IN, ID_EX_Rsrc2_IN : STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL ID_EX_Rdst_IN : STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL ID_EX_Rdata1_IN, ID_EX_Rdata2_IN : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ID_EX_IMM_OFFSET_IN : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL ID_EX_OP_CODE_IN : STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
 
     -- ID_EX Register outputs
-    SIGNAL ID_EX_REG_EX_SIGNALS_OUT : STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL ID_EX_REG_EX_SIGNALS_OUT : STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
 
 BEGIN
 
@@ -224,8 +221,8 @@ BEGIN
     reg_file_inst : reg_file PORT MAP(
         CLK => CLK, RST => RST, RegWrite => RegWrite,
         Rdst => Rdst, WR_data => WR_data,
-        Rsrc1 => ID_EX_Rsrc1_IN, Rdata1 => ID_EX_Rdata1_IN,
-        Rsrc2 => ID_EX_Rsrc2_IN, Rdata2 => ID_EX_Rdata2_IN
+        Rsrc1 => INSTR(10 DOWNTO 8), Rdata1 => ID_EX_Rdata1_IN,
+        Rsrc2 => INSTR(7 DOWNTO 5), Rdata2 => ID_EX_Rdata2_IN
     );
 
     EPC_inst : EPC PORT MAP(
@@ -255,11 +252,11 @@ BEGIN
         MEM_SIGNALS_IN => ID_EX_REG_MEM_SIGNALS_IN,
         WB_SIGNALS_IN => ID_EX_REG_WB_SIGNALS_IN,
         -- Input data signals
-        PC_IN => ID_EX_PC_IN, PC_INC_IN => ID_EX_PC_INC_IN,
+        PC_IN => PC, PC_INC_IN => PC_INC,
         Rdata1_IN => ID_EX_Rdata1_IN, Rdata2_IN => ID_EX_Rdata2_IN,
-        Rsrc1_IN => ID_EX_Rsrc1_IN, Rsrc2_IN => ID_EX_Rsrc2_IN,
-        Rdst_IN => ID_EX_Rdst_IN, IMM_OFFSET_IN => ID_EX_IMM_OFFSET_IN,
-        OP_CODE_IN => ID_EX_OP_CODE_IN,
+        Rsrc1_IN => INSTR(10 DOWNTO 8), Rsrc2_IN => INSTR(7 DOWNTO 5),
+        Rdst_IN => INSTR(4 DOWNTO 2), IMM_OFFSET_IN => INSTR(31 DOWNTO 16),
+        OP_CODE_IN => INSTR(15 DOWNTO 11),
         -- Output control signals:
         --  1) EX stage
         EX_SIGNALS_OUT => ID_EX_REG_EX_SIGNALS_OUT,
@@ -277,13 +274,12 @@ BEGIN
 
     ALU_SRC1 <= ID_EX_REG_EX_SIGNALS_OUT(0);
     ALU_SRC2 <= ID_EX_REG_EX_SIGNALS_OUT(1);
-    ALU_OP <= ID_EX_REG_EX_SIGNALS_OUT(2);
-    JUMP_UNCOND <= ID_EX_REG_EX_SIGNALS_OUT(3);
-    BRANCH <= ID_EX_REG_EX_SIGNALS_OUT(4);
-    JUMP_COND <= ID_EX_REG_EX_SIGNALS_OUT(7 DOWNTO 5);
-    SET_FLAGS <= ID_EX_REG_EX_SIGNALS_OUT(10 DOWNTO 8);
-    RESET_FLAGS <= ID_EX_REG_EX_SIGNALS_OUT(13 DOWNTO 11);
-    SP_INC_SIG <= ID_EX_REG_EX_SIGNALS_OUT(14);
-
-
+    ALU_OP <= ID_EX_REG_EX_SIGNALS_OUT(6 DOWNTO 2);
+    JUMP_UNCOND <= ID_EX_REG_EX_SIGNALS_OUT(7);
+    BRANCH <= ID_EX_REG_EX_SIGNALS_OUT(8);
+    JUMP_COND <= ID_EX_REG_EX_SIGNALS_OUT(10 DOWNTO 9);
+    SET_FLAGS <= ID_EX_REG_EX_SIGNALS_OUT(13 DOWNTO 11);
+    RESET_FLAGS <= ID_EX_REG_EX_SIGNALS_OUT(16 DOWNTO 14);
+    SP_INC_SIG <= ID_EX_REG_EX_SIGNALS_OUT(17);
+    MEM_READ <= ID_EX_REG_EX_SIGNALS_OUT(18);
 END ARCHITECTURE ID_arch;

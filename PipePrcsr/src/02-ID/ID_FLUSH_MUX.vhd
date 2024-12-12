@@ -7,11 +7,11 @@ ENTITY ID_FLUSH_MUX IS
         -- I/P flush, stall, pipeline control signals
         ID_EX_FLUSH : IN STD_LOGIC;
         STALL : IN STD_LOGIC;
-        EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(14 DOWNTO 0);
+        EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(18 DOWNTO 0);
         MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
         WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         -- Pipeline Control Signals (EX Stage)
-        EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(14 DOWNTO 0) := (OTHERS => '0');
+        EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (MEM Stage)
         MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (WB Stage)
@@ -20,6 +20,8 @@ ENTITY ID_FLUSH_MUX IS
 END ENTITY ID_FLUSH_MUX;
 
 ARCHITECTURE ID_FLUSH_MUX_arch OF ID_FLUSH_MUX IS
+
+    SIGNAL FLUSH_RESULT : STD_LOGIC := '0';
 
 BEGIN
 

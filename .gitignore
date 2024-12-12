@@ -4,6 +4,7 @@
 # generated files excludes
 *.qws
 *.rpt
+*.bak
 
 # generated folders excludes
 */db/

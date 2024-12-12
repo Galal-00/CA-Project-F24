@@ -26,14 +26,17 @@ BEGIN
     BEGIN
         IF RST = '1' THEN
             data <= (OTHERS => '0');
-        ELSIF falling_edge(CLK) AND Store_EN = '1' THEN
-            IF EXP_SRC = '1' THEN
-                data <= PC_EX;
-            ELSE
-                data <= PC_D;
+        ELSIF falling_edge(CLK) THEN
+            IF Store_EN = '1' THEN
+                IF EXP_SRC = '1' THEN
+                    data <= PC_EX;
+                ELSE
+                    data <= PC_D;
+                END IF;
             END IF;
-        END PROCESS;
+        END IF;
+    END PROCESS;
 
-        EPC_data <= data;
+    EPC_data <= data;
 
-    END ARCHITECTURE;
+END ARCHITECTURE;
