@@ -19,15 +19,16 @@ ENTITY EX IS
         -- Mem_Control_Sigs(6) : SP_EN
         -- Mem_Control_Sigs(7) : Is_RET_RTI
         -- Mem_Control_Sigs(8) : Update_Flags
+        -- Mem_Control_Sigs(9) : RegWrite for forwarding
 
-        Mem_Control_Sigs : IN STD_ULOGIC_VECTOR(8 DOWNTO 0)
+        Mem_Control_Sigs : IN STD_ULOGIC_VECTOR(9 DOWNTO 0);
         
       
         -- Wb_Control_Sigs(0) : MemToReg
         -- Wb_Control_Sigs(1) : RegWrite
         -- Wb_Control_Sigs(2) : OutSig
         -- Wb_Control_Sigs(3) : InSig
-        Wb_Control_Sigs : IN STD_ULOGIC_VECTOR(3 DOWNTO 0)
+        Wb_Control_Sigs : IN STD_ULOGIC_VECTOR(3 DOWNTO 0);
         
         -- Ex control sigs
         Reset_Flags : IN STD_ULOGIC_VECTOR(2 DOWNTO 0);
@@ -77,10 +78,10 @@ ENTITY EX IS
         Rdst_Out : OUT STD_ULOGIC_VECTOR(2 DOWNTO 0);
         OpCode_Out : OUT STD_ULOGIC_VECTOR(4 DOWNTO 0);
         IN_Port_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
-        SP_inc_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
+        SP_inc_data_Out : OUT STD_ULOGIC_VECTOR(15 DOWNTO 0);
 
         -- Output control signals
-        Mem_Control_Sigs_Out : OUT STD_ULOGIC_VECTOR(8 DOWNTO 0)
+        Mem_Control_Sigs_Out : OUT STD_ULOGIC_VECTOR(8 DOWNTO 0);
         Wb_Control_Sigs_Out : OUT STD_ULOGIC_VECTOR(3 DOWNTO 0)
     );
 END ENTITY EX;
