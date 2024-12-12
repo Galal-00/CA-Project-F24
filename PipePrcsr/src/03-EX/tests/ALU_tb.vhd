@@ -54,6 +54,13 @@ BEGIN
         operand2 <= X"0004";
         WAIT FOR clk_period;
         ASSERT ALU_Result = X"0007" REPORT "ADD failed" SEVERITY ERROR;
+       
+        -- Test ADD carry flag and zero flag (01000)
+        OpCode <= "01000";
+        operand1 <= X"FFFF";
+        operand2 <= X"0001";
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" and Flags = "011" REPORT "ADD failed" SEVERITY ERROR;
 
         -- Test SUB (01001)
         OpCode <= "01001";
@@ -61,6 +68,13 @@ BEGIN
         operand2 <= X"0003";
         WAIT FOR clk_period;
         ASSERT ALU_Result = X"0004" REPORT "SUB failed" SEVERITY ERROR;
+   
+        -- Test SUB and neg flag  and carry flag (in this case it represents borrow)(01001)
+        OpCode <= "01001";
+        operand1 <= X"0003";
+        operand2 <= X"0007";
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0004" and Flags = "110" REPORT "SUB failed" SEVERITY ERROR;
 
         -- Test AND (01010)
         OpCode <= "01010";
