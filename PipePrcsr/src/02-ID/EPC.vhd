@@ -7,8 +7,10 @@ ENTITY EPC IS
         CLK : IN STD_LOGIC;
         RST : IN STD_LOGIC;
 
+        PC_D : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        PC_EX : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        EXP_SRC : IN STD_LOGIC;
         Store_EN : IN STD_LOGIC;
-        WR_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
 
         EPC_data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
@@ -25,10 +27,13 @@ BEGIN
         IF RST = '1' THEN
             data <= (OTHERS => '0');
         ELSIF falling_edge(CLK) AND Store_EN = '1' THEN
-            data <= WR_data;
-        END IF;
-    END PROCESS;
+            IF EXP_SRC = '1' THEN
+                data <= PC_EX;
+            ELSE
+                data <= PC_D;
+            END IF;
+        END PROCESS;
 
-    EPC_data <= data;
+        EPC_data <= data;
 
-END ARCHITECTURE;
+    END ARCHITECTURE;
