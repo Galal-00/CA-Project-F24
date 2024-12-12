@@ -6,10 +6,10 @@ USE ieee.math_real.ALL;
 
 ENTITY SP_Inc_Block IS
     PORT (
-        Clk : IN STD_ULOGIC;
-        Rst : IN STD_ULOGIC;
-        SP_EN : IN STD_ULOGIC;
-        SP_INC : IN STD_ULOGIC;
+        Clk : IN STD_LOGIC;
+        Rst : IN STD_LOGIC;
+        SP_EN : IN STD_LOGIC;
+        SP_INC : IN STD_LOGIC;
 
         SP_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0); -- comes from the mem stage
         SP_inc_data_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) -- goes to the mem stage
