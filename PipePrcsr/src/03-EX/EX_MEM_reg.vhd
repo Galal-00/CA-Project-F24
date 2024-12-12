@@ -9,19 +9,8 @@ ENTITY EX_MEM_reg IS
         Rst : IN STD_ULOGIC;
 
         -- input control signals
-        MemRead : IN STD_ULOGIC;
-        MemWrite : IN STD_ULOGIC;
-        MemToReg : IN STD_ULOGIC;
-        DM_Addr : IN STD_ULOGIC;
-        CallSig : IN STD_ULOGIC;
-        Add_Flags : IN STD_ULOGIC;
-        SP_DEC : IN STD_ULOGIC;
-        SP_EN : IN STD_ULOGIC;
-        OutSig : IN STD_ULOGIC;
-        Is_RET_RTI : IN STD_ULOGIC;
-        Update_Flags : IN STD_ULOGIC;
-        InSig : IN STD_ULOGIC;
-        RegWrite : IN STD_ULOGIC;
+        Mem_Control_Sigs : IN STD_ULOGIC_VECTOR(8 DOWNTO 0)
+        Wb_Control_Sigs : IN STD_ULOGIC_VECTOR(3 DOWNTO 0)
         -- Output control signals
 
         -- Control signals vector for Mem
@@ -36,7 +25,7 @@ ENTITY EX_MEM_reg IS
         -- Mem_Control_Sigs(7) : Is_RET_RTI
         -- Mem_Control_Sigs(8) : Update_Flags
 
-        Mem_Control_Sigs : OUT STD_ULOGIC_VECTOR(8 DOWNTO 0)
+        Mem_Control_Sigs_Out : OUT STD_ULOGIC_VECTOR(8 DOWNTO 0)
 
         -- Control signals vector for WB
 
@@ -44,7 +33,7 @@ ENTITY EX_MEM_reg IS
         -- Wb_Control_Sigs(1) : RegWrite
         -- Wb_Control_Sigs(2) : OutSig
         -- Wb_Control_Sigs(3) : InSig
-        Wb_Control_Sigs : OUT STD_ULOGIC_VECTOR(3 DOWNTO 0)
+        Wb_Control_Sigs_Out : OUT STD_ULOGIC_VECTOR(3 DOWNTO 0)
 
         -- input data
         ALU_Result_In : IN STD_ULOGIC_VECTOR(15 DOWNTO 0);
@@ -75,8 +64,8 @@ BEGIN
     PROCESS (Clk, Rst)
     BEGIN
         IF Rst = '1' THEN
-            Mem_Control_Sigs <= (OTHERS => '0');
-            Wb_Control_Sigs <= (OTHERS => '0');
+            Mem_Control_Sigs_Out <= (OTHERS => '0');
+            Wb_Control_Sigs_Out <= (OTHERS => '0');
 
             ALU_Result_Out <= (OTHERS => '0');
             PC_inc_Out <= (OTHERS => '0');
@@ -87,23 +76,12 @@ BEGIN
             IN_Port_Out <= (OTHERS => '0');
             SP_inc_Out <= (OTHERS => '0');
         ELSIF rising_edge(Clk) THEN
-            -- Update Mem_Control_Sigs
-            Mem_Control_Sigs(0) <= MemRead;
-            Mem_Control_Sigs(1) <= MemWrite;
-            Mem_Control_Sigs(2) <= DM_Addr;
-            Mem_Control_Sigs(3) <= CallSig;
-            Mem_Control_Sigs(4) <= Add_Flags;
-            Mem_Control_Sigs(5) <= SP_DEC;
-            Mem_Control_Sigs(6) <= SP_EN;
-            Mem_Control_Sigs(7) <= Is_RET_RTI;
-            Mem_Control_Sigs(8) <= Update_Flags;
+            -- Update Mem_Control_Sigs_Out
+            Mem_Control_Sigs_Out <= Mem_Control_Sigs;
 
-            -- Update Wb_Control_Sigs
-            Wb_Control_Sigs(0) <= MemToReg;
-            Wb_Control_Sigs(1) <= RegWrite;
-            Wb_Control_Sigs(2) <= OutSig;
-            Wb_Control_Sigs(3) <= InSig;
-            
+            -- Update Wb_Control_Sigs_Out
+            Wb_Control_Sigs_Out <= Wb_Control_Sigs;
+
             ALU_Result_Out <= ALU_Result_In;
             PC_inc_Out <= PC_inc;
             Flags_Out <= Flags;
