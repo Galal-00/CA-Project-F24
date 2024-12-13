@@ -41,6 +41,13 @@ BEGIN
     -- Stimulus process
     Stimulus : PROCESS
     BEGIN
+        -- Test SETC, operands should be irrelevant (00010)
+        OpCode <= "00010";
+        operand1 <= X"1234";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" AND Flags = "011" REPORT "SETC failed" SEVERITY ERROR;
+
         -- Test MOV (00111)
         OpCode <= "00111";
         operand1 <= X"1234";
