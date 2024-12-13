@@ -50,9 +50,13 @@ BEGIN
         STD_LOGIC_VECTOR(unsigned(temp1) - unsigned(temp2)) WHEN OpCode = "01001" ELSE -- SUB
         temp1 AND temp2 WHEN OpCode = "01010" ELSE -- AND
         temp2 WHEN OpCode = "01110" ELSE -- LDM
+
+        -- Single Operand Operations:
         (16 => '1', OTHERS => '0') WHEN OpCode = "00010" ELSE -- SETC
         ('0' &NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
         STD_LOGIC_VECTOR(unsigned(temp1) + 1) WHEN OpCode = "00100" ELSE -- INC
+        temp1 WHEN OpCode = "00101" ELSE -- OUT
+
         tempRes; -- Default case
 
     -- Assign the result to ALU_Result
