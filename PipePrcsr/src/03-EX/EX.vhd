@@ -62,6 +62,8 @@ ENTITY EX IS
         IN_Mem_Wb : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Rdst_Ex_Mem : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Rdst_Mem_Wb : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        OpCode_Mem : IN STD_LOGIC_VECTOR(4 DOWNTO 0); -- for Forwarding unit to know the instruction was IN
+        OpCode_Wb : IN STD_LOGIC_VECTOR(4 DOWNTO 0); -- for Forwarding unit to know the instruction was IN
 
         -- input data from mem stage
         Flags : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
