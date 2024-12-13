@@ -52,6 +52,7 @@ BEGIN
         temp2 WHEN OpCode = "01110" ELSE -- LDM
         (16 => '1', OTHERS => '0') WHEN OpCode = "00010" ELSE -- SETC
         ('0' &NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
+        STD_LOGIC_VECTOR(unsigned(temp1) + 1) WHEN OpCode = "00100" ELSE -- INC
         tempRes; -- Default case
 
     -- Assign the result to ALU_Result
