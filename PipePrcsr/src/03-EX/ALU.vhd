@@ -5,6 +5,10 @@ USE ieee.math_real.ALL;
 
 -- ALU operations
 
+-- One Operands
+-- SETC 00010 -- Simulates a fake overflow to make Carry flag active
+
+
 --Two Operands 
 -- MOV  00111 Rsrc1  Rdst   -- alu result is set tot the operand1 value
 -- ADD  01000 Rsrc1 Rsrc2 Rdst   
@@ -46,6 +50,13 @@ BEGIN
         STD_LOGIC_VECTOR(unsigned(temp1) - unsigned(temp2)) WHEN OpCode = "01001" ELSE -- SUB
         temp1 AND temp2 WHEN OpCode = "01010" ELSE -- AND
         temp2 WHEN OpCode = "01110" ELSE -- LDM
+
+        -- Single Operand Operations:
+        (16 => '1', OTHERS => '0') WHEN OpCode = "00010" ELSE -- SETC
+        ('0' &NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
+        STD_LOGIC_VECTOR(unsigned(temp1) + 1) WHEN OpCode = "00100" ELSE -- INC
+        temp1 WHEN OpCode = "00101" ELSE -- OUT
+
         tempRes; -- Default case
 
     -- Assign the result to ALU_Result
@@ -54,6 +65,6 @@ BEGIN
     -- Update the flags
     Flags(0) <= '1' WHEN ALU_Result = "0000000000000000" ELSE
     '0'; -- Zero flag
-    Flags(1) <= tempRes(16); -- Carry Flag
-    Flags(2) <= ALU_Result(15); -- Negative Flag
+    Flags(1) <= ALU_Result(15); -- Negative Flag
+    Flags(2) <= tempRes(16); -- Carry Flag
 END ARCHITECTURE;

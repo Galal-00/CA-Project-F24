@@ -41,6 +41,62 @@ BEGIN
     -- Stimulus process
     Stimulus : PROCESS
     BEGIN
+        -- Test SETC, operands should be irrelevant (00010)
+        OpCode <= "00010";
+        operand1 <= X"1234";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" AND Flags = "011" REPORT "SETC failed" SEVERITY ERROR;
+
+        -- Test NOT (00011)
+        OpCode <= "00011";
+        operand1 <= X"F00F";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0FF0" AND Flags = "000" REPORT "NOT failed" SEVERITY ERROR;
+
+        -- Test NOT and trigger negative flag (00011)
+        OpCode <= "00011";
+        operand1 <= X"700F";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"8FF0" AND Flags = "100" REPORT "NOT (N flag) failed" SEVERITY ERROR;
+
+        -- Test NOT and trigger zero flag (00011)
+        OpCode <= "00011";
+        operand1 <= X"FFFF";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" AND Flags = "001" REPORT "NOT (Z flag) failed" SEVERITY ERROR;
+        
+        -- Test INC (00100)
+        OpCode <= "00100";
+        operand1 <= X"1234";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"1235" REPORT "INC failed" SEVERITY ERROR;
+
+        -- Test INC starting from zero (00100)
+        OpCode <= "00100";
+        operand1 <= X"0000";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0001" AND Flags = "000" REPORT "INC (starting from 0000) failed" SEVERITY ERROR;
+
+        -- Test INC and trigger negative flag (00100)
+        OpCode <= "00100";
+        operand1 <= X"7FFF";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"8000" AND Flags = "100" REPORT "INC (negative flag) failed" SEVERITY ERROR;
+
+        -- Test INC overflow and trigger Z,C flag (00100)
+        OpCode <= "00100";
+        operand1 <= X"FFFF";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" AND Flags = "011" REPORT "INC (C and Z flag) failed" SEVERITY ERROR;
+
         -- Test MOV (00111)
         OpCode <= "00111";
         operand1 <= X"1234";
