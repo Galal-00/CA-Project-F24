@@ -65,6 +65,6 @@ BEGIN
     -- Update the flags
     Flags(0) <= '1' WHEN ALU_Result = "0000000000000000" ELSE
     '0'; -- Zero flag
-    Flags(1) <= tempRes(16); -- Carry Flag
-    Flags(2) <= ALU_Result(15); -- Negative Flag
+    Flags(1) <= ALU_Result(15); -- Negative Flag
+    Flags(2) <= tempRes(16); -- Carry Flag
 END ARCHITECTURE;
