@@ -48,6 +48,28 @@ BEGIN
         WAIT FOR clk_period;
         ASSERT ALU_Result = X"0000" AND Flags = "011" REPORT "SETC failed" SEVERITY ERROR;
 
+        -- Test NOT (00011)
+        OpCode <= "00011";
+        operand1 <= X"F00F";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0FF0" AND Flags = "000" REPORT "NOT failed" SEVERITY ERROR;
+
+        -- Test NOT and trigger negative flag (00011)
+        OpCode <= "00011";
+        operand1 <= X"700F";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"8FF0" AND Flags = "100" REPORT "NOT (N flag) failed" SEVERITY ERROR;
+
+        -- Test NOT and trigger zero flag (00011)
+        OpCode <= "00011";
+        operand1 <= X"FFFF";
+        operand2 <= (OTHERS => '0');
+        WAIT FOR clk_period;
+        ASSERT ALU_Result = X"0000" AND Flags = "001" REPORT "NOT (Z flag) failed" SEVERITY ERROR;
+        
+
         -- Test MOV (00111)
         OpCode <= "00111";
         operand1 <= X"1234";

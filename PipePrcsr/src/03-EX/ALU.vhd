@@ -51,6 +51,7 @@ BEGIN
         temp1 AND temp2 WHEN OpCode = "01010" ELSE -- AND
         temp2 WHEN OpCode = "01110" ELSE -- LDM
         (16 => '1', OTHERS => '0') WHEN OpCode = "00010" ELSE -- SETC
+        ('0' &NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
         tempRes; -- Default case
 
     -- Assign the result to ALU_Result
