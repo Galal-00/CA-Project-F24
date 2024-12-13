@@ -22,7 +22,7 @@ USE ieee.numeric_std.ALL;
 
 -- Pipeline Control Signals:
 -- 1) EX Stage:
---  a) ALU_SRC1, ALU_SRC2, ALU_OP
+--  a) ALU_SRC1, ALU_SRC2
 --  b) JUMP_UNCOND, BRANCH, JUMP_COND[1:0], SET_FLAGS[2:0], RESET_FLAGS[2:0]
 --  c) SP_INC_SIG
 --  d) MEM_READ
@@ -54,7 +54,7 @@ ENTITY CU IS
         -- Exceptions and Interrupts (IF stage)
         IF_SIGNALS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (EX Stage)
-        EX_SIGNALS : OUT STD_LOGIC_VECTOR(18 DOWNTO 0) := (OTHERS => '0');
+        EX_SIGNALS : OUT STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (MEM Stage)
         MEM_SIGNALS : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (WB Stage)
@@ -68,6 +68,7 @@ ARCHITECTURE CU_arch OF CU IS
 
     -- EXP checks
     SIGNAL IS_LDD_OR_STD : STD_LOGIC := '0';
+    SIGNAL USES_IMM_OR_OFFSET : STD_LOGIC := '0';
     SIGNAL INVALID_MEM_EXP : STD_LOGIC := '0';
     SIGNAL EMPTY_STACK_EXP : STD_LOGIC := '0';
 
@@ -92,12 +93,18 @@ BEGIN
     -- 2- Jump or Call  w/ R[Rsrc1] > 0x0FFF
     -- 3- RET / RTI w/ DM[SP] > 0x0FFF
     -- 4- INT w/ IM[index + 3] > 0x0FFF ?????
+    -- 5- PC = 0x0FFF but instruction takes IMM / OFFSET. IADD, LDM, LDD, STD
     -- Invalid MEM address (DM) can occur when DM read address > 0x0FFF, i.e:
     -- MEM access w/ address from ALU (LDD / STD)
 
     IS_LDD_OR_STD <= '1' WHEN (OP_CODE = "01111" OR OP_CODE = "10000") ELSE
         '0';
-    INVALID_MEM_EXP <= '1' WHEN (PC > x"0FFF" OR (IS_LDD_OR_STD = '1' AND ALU_RESULT > x"0FFF")) ELSE
+    USES_IMM_OR_OFFSET <= '1' WHEN (OP_CODE = "01011"
+        OR (OP_CODE >= "01110" AND OP_CODE <= "10000")) ELSE
+        '0';
+    INVALID_MEM_EXP <= '1' WHEN (PC > x"0FFF"
+        OR (IS_LDD_OR_STD = '1' AND ALU_RESULT > x"0FFF")
+        OR (USES_IMM_OR_OFFSET = '1' AND PC = x"0FFF")) ELSE
         '0';
 
     -- Empty stack can occur when SP > 0x0FFF. Cases:
@@ -130,42 +137,41 @@ BEGIN
     '0'; -- ALU_SRC1. 1 (use imm / offset) when STD.
     EX_SIGNALS(1) <= '1' WHEN (OP_CODE = "01011" OR OP_CODE = "01110" OR OP_CODE = "01111") ELSE
     '0'; -- ALU_SRC2. 1 (use imm / offset) when IADD, LDM, LDD
-    EX_SIGNALS(6 DOWNTO 2) <= OP_CODE; -- ALU_OP. ALU operation
     -- Branch
-    EX_SIGNALS(7) <= '1' WHEN (OP_CODE = "10100" OR OP_CODE = "10101") ELSE
+    EX_SIGNALS(2) <= '1' WHEN (OP_CODE = "10100" OR OP_CODE = "10101") ELSE
     '0'; -- JUMP_UNCOND. 1 when JMP, CALL
-    EX_SIGNALS(8) <= '1' WHEN (OP_CODE >= "10001" AND OP_CODE <= "10101") ELSE
+    EX_SIGNALS(3) <= '1' WHEN (OP_CODE >= "10001" AND OP_CODE <= "10101") ELSE
     '0'; -- BRANCH. 1 when unconditional or conditional jump
-    EX_SIGNALS(10 DOWNTO 9) <= "00" WHEN (OP_CODE = "10001") ELSE
+    EX_SIGNALS(5 DOWNTO 4) <= "00" WHEN (OP_CODE = "10001") ELSE
     "01" WHEN (OP_CODE = "10010") ELSE
     "10" WHEN (OP_CODE = "10011") ELSE
     "00"; -- JUMP_COND. "00" when JZ, "01" when JN, "10" when JC, "00" else
-    EX_SIGNALS(11) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR
+    EX_SIGNALS(6) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR
     (OP_CODE >= "01000" AND OP_CODE <= "01011")) ELSE
     '0'; -- SET_FLAGS(0). 1 when NOT, INC, ADD, SUB, AND, IADD else 0
-    EX_SIGNALS(12) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR
+    EX_SIGNALS(7) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR
     (OP_CODE >= "01000" AND OP_CODE <= "01011")) ELSE
     '0'; -- SET_FLAGS(1). 1 when NOT, INC, ADD, SUB, AND, IADD else 0
-    EX_SIGNALS(13) <= '1' WHEN (OP_CODE = "00100" OR OP_CODE = "01000" OR OP_CODE = "01001"
+    EX_SIGNALS(8) <= '1' WHEN (OP_CODE = "00100" OR OP_CODE = "01000" OR OP_CODE = "01001"
     OR OP_CODE = "01011") ELSE
     '0'; -- SET_FLAGS(2). 1 when INC, ADD, SUB, IADD else 0
-    EX_SIGNALS(14) <= '1' WHEN (EX_Opcode = "10001") ELSE
+    EX_SIGNALS(9) <= '1' WHEN (EX_Opcode = "10001") ELSE
     '0'; -- RESET_FLAGS(0). 1 when JZ in EX stage
-    EX_SIGNALS(15) <= '1' WHEN (EX_Opcode = "10010") ELSE
+    EX_SIGNALS(10) <= '1' WHEN (EX_Opcode = "10010") ELSE
     '0'; -- RESET_FLAGS(1). 1 when JN in EX stage
-    EX_SIGNALS(16) <= '1' WHEN (EX_Opcode = "10011") ELSE
+    EX_SIGNALS(11) <= '1' WHEN (EX_Opcode = "10011") ELSE
     '0'; -- RESET_FLAGS(2). 1 when JC in EX stage
     -- Stack Pointer Increment
-    EX_SIGNALS(17) <= '1' WHEN (OP_CODE = "01101" OR OP_CODE = "10110" OR OP_CODE = "11000") ELSE
+    EX_SIGNALS(12) <= '1' WHEN (OP_CODE = "01101" OR OP_CODE = "10110" OR OP_CODE = "11000") ELSE
     '0'; -- SP_INC_SIG. 1 WHEN POP, RET, RTI
     -- Memory Read
-    EX_SIGNALS(18) <= '1' WHEN (OP_CODE = "01101" OR OP_CODE = "01111"
+    EX_SIGNALS(13) <= '1' WHEN (OP_CODE = "01101" OR OP_CODE = "01111"
     OR OP_CODE = "10110" OR OP_CODE = "11000") ELSE
     '0'; -- MEM_READ. 1 WHEN POP, LDD, RET, RTI
 
     -- Pipeline Control Signals (MEM Stage)
     -- Data Memory
-    MEM_SIGNALS(0) <= EX_SIGNALS(14); -- MEM_READ. 
+    MEM_SIGNALS(0) <= EX_SIGNALS(13); -- MEM_READ. 
     MEM_SIGNALS(1) <= '1' WHEN (OP_CODE = "01100" OR OP_CODE = "10000"
     OR OP_CODE = "10101" OR OP_CODE = "10111") ELSE
     '0'; -- MEM_WRITE. 1 when PUSH, STD, CALL, INT
