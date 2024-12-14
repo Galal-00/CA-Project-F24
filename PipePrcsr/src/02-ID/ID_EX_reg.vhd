@@ -10,7 +10,7 @@ ENTITY ID_EX_reg IS
         -- Input control signals
         EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
         MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
-        WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
         -- Input data signals
         PC_IN : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_INC_IN : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -28,7 +28,7 @@ ENTITY ID_EX_reg IS
         --  2) MEM stage
         MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         --  3) WB stage
-        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
+        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
         -- Output data signals
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
         PC_INC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');

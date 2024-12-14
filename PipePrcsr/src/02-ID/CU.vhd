@@ -58,7 +58,7 @@ ENTITY CU IS
         -- Pipeline Control Signals (MEM Stage)
         MEM_SIGNALS : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (WB Stage)
-        WB_SIGNALS : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
+        WB_SIGNALS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0')
     );
 END ENTITY CU;
 
@@ -67,7 +67,7 @@ ARCHITECTURE CU_arch OF CU IS
     SIGNAL OP_CODE : STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
 
     -- EXP checks
-    SIGNAL IS_LDD_OR_STD : STD_LOGIC := '0';
+    SIGNAL EX_IS_LDD_OR_STD : STD_LOGIC := '0';
     SIGNAL USES_IMM_OR_OFFSET : STD_LOGIC := '0';
     SIGNAL INVALID_MEM_EXP : STD_LOGIC := '0';
     SIGNAL EMPTY_STACK_EXP : STD_LOGIC := '0';
@@ -95,15 +95,15 @@ BEGIN
     -- 4- INT w/ IM[index + 3] > 0x0FFF ?????
     -- 5- PC = 0x0FFF but instruction takes IMM / OFFSET. IADD, LDM, LDD, STD
     -- Invalid MEM address (DM) can occur when DM read address > 0x0FFF, i.e:
-    -- MEM access w/ address from ALU (LDD / STD)
+    -- MEM access (LDD / STD) w/ address from ALU > 
 
-    IS_LDD_OR_STD <= '1' WHEN (OP_CODE = "01111" OR OP_CODE = "10000") ELSE
+    EX_IS_LDD_OR_STD <= '1' WHEN (EX_OpCode = "01111" OR EX_OpCode = "10000") ELSE
         '0';
     USES_IMM_OR_OFFSET <= '1' WHEN (OP_CODE = "01011"
         OR (OP_CODE >= "01110" AND OP_CODE <= "10000")) ELSE
         '0';
     INVALID_MEM_EXP <= '1' WHEN (PC > x"0FFF"
-        OR (IS_LDD_OR_STD = '1' AND ALU_RESULT > x"0FFF")
+        OR (EX_IS_LDD_OR_STD = '1' AND ALU_RESULT > x"0FFF")
         OR (USES_IMM_OR_OFFSET = '1' AND PC = x"0FFF")) ELSE
         '0';
 
