@@ -2,6 +2,7 @@
 .vscode/
 
 # generated files excludes
+*.qsf
 *.qws
 *.rpt
 *.bak

@@ -49,7 +49,7 @@ ENTITY EX_MEM_reg IS
         -- Output data from the Ex/Mem reg
         ALU_Result_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); -- from flag reg
+        Flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); 
         ReadData1_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         Rdst_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         OpCode_Out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);

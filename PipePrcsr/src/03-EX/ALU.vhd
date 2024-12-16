@@ -7,8 +7,6 @@ USE ieee.math_real.ALL;
 
 -- One Operands
 -- SETC 00010 -- Simulates a fake overflow to make Carry flag active
-
-
 --Two Operands 
 -- MOV  00111 Rsrc1  Rdst   -- alu result is set tot the operand1 value
 -- ADD  01000 Rsrc1 Rsrc2 Rdst   
@@ -46,18 +44,18 @@ BEGIN
     temp2 <= '0' & operand2;
 
     tempRes <= temp1 WHEN OpCode = "00111" ELSE -- Mov
-        STD_LOGIC_VECTOR(unsigned(temp1) + unsigned(temp2)) WHEN OpCode = "01000" OR OpCode = "01011" OR OpCode ="01111"  OR OpCode = "10000"  ELSE -- ADD,IADD,LDD,STD
+        STD_LOGIC_VECTOR(unsigned(temp1) + unsigned(temp2)) WHEN OpCode = "01000" OR OpCode = "01011" OR OpCode = "01111" OR OpCode = "10000" ELSE -- ADD,IADD,LDD,STD
         STD_LOGIC_VECTOR(unsigned(temp1) - unsigned(temp2)) WHEN OpCode = "01001" ELSE -- SUB
         temp1 AND temp2 WHEN OpCode = "01010" ELSE -- AND
         temp2 WHEN OpCode = "01110" ELSE -- LDM
 
         -- Single Operand Operations:
         (16 => '1', OTHERS => '0') WHEN OpCode = "00010" ELSE -- SETC
-        ('0' &NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
+        ('0' & NOT temp1(15 DOWNTO 0)) WHEN OpCode = "00011" ELSE -- NOT
         STD_LOGIC_VECTOR(unsigned(temp1) + 1) WHEN OpCode = "00100" ELSE -- INC
         temp1 WHEN OpCode = "00101" ELSE -- OUT
 
-        tempRes; -- Default case
+        (OTHERS => '0'); -- Default case
 
     -- Assign the result to ALU_Result
     ALU_Result <= tempRes(15 DOWNTO 0);
