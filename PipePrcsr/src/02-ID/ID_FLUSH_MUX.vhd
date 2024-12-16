@@ -9,13 +9,13 @@ ENTITY ID_FLUSH_MUX IS
         STALL : IN STD_LOGIC;
         EX_SIGNALS_IN : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
         MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
-        WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
         -- Pipeline Control Signals (EX Stage)
         EX_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (MEM Stage)
         MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (WB Stage)
-        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
+        WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0')
     );
 END ENTITY ID_FLUSH_MUX;
 
