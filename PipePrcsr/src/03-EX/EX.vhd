@@ -39,7 +39,6 @@ ENTITY EX IS
         ALU_Src1 : IN STD_LOGIC;
         ALU_Src2 : IN STD_LOGIC;
         Ex_Flush : IN STD_LOGIC;
-        ALU_OP : IN STD_LOGIC_VECTOR(1 DOWNTO 0); -- change its size later!!
         Update_Flags: IN STD_LOGIC; -- recieved from mem stage
         -- Input control signals from next stages
         RegWrite_Ex_Mem : IN STD_LOGIC;
