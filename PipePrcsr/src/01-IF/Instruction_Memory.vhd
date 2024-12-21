@@ -13,8 +13,8 @@ ENTITY Instruction_Memory IS
     reset : IN STD_LOGIC;
     -- Control signals --
     -- exeption signals -> IM[1] pop empty stack and IM[2] address exceeds 0x0FFF
-    exp_num : IN STD_LOGIC;
     exp_sig : IN STD_LOGIC;
+    exp_num : IN STD_LOGIC;
     -- Interrupt index is either 0 or 1 -> IM[3] or IM[4]
     int_sig   : IN STD_LOGIC;
     int_index : IN STD_LOGIC
