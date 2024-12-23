@@ -75,9 +75,9 @@ BEGIN
         CONSTANT max_cycles : INTEGER := 100; -- Set maximum clock cycles
     BEGIN
         WHILE cycles < max_cycles LOOP
-            CLK <= '1';
-            WAIT FOR CLK_PERIOD / 2;
             CLK <= '0';
+            WAIT FOR CLK_PERIOD / 2;
+            CLK <= '1';
             WAIT FOR CLK_PERIOD / 2;
             cycles := cycles + 1;
         END LOOP;

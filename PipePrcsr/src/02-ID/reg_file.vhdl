@@ -38,7 +38,7 @@ BEGIN
             FOR loc IN 0 TO (2 ** address_bits) - 1 LOOP
                 Reg(loc) <= (OTHERS => '0');
             END LOOP;
-        ELSIF rising_edge(CLK) THEN
+        ELSIF falling_edge(CLK) THEN
             IF RegWrite = '1' THEN
                 Reg(to_integer(unsigned(Rdst))) <= WR_data;
             END IF;

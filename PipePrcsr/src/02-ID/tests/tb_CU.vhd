@@ -135,6 +135,7 @@ BEGIN
         ASSERT (IF_SIGNALS(2) = '1') REPORT "Test case 5 failed: Interrupt signal not '1' for INT instruction" SEVERITY ERROR;
         ASSERT (IF_SIGNALS(3) = '1') REPORT "Test case 5 failed: Interrupt index not '1' for INT instruction" SEVERITY ERROR;
         ASSERT (MEM_SIGNALS(1) = '1') REPORT "Test case 5 failed: MEM MEM_WRITE signal not '1' for INT instruction" SEVERITY ERROR;
+        ASSERT (MEM_SIGNALS(3) = '1') REPORT "Test case 5 failed: MEM CALL_OR_INT signal not '1' for INT instruction" SEVERITY ERROR;
         ASSERT (MEM_SIGNALS(6) = '1') REPORT "Test case 5 failed: MEM ADD_FLAGS signal not '1' for INT instruction" SEVERITY ERROR;
         ASSERT (MEM_SIGNALS(8) = '1') REPORT "Test case 5 failed: MEM SP_DEC signal not '1' for INT instruction" SEVERITY ERROR;
 

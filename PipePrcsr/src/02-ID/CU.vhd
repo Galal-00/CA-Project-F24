@@ -178,8 +178,8 @@ BEGIN
     MEM_SIGNALS(2) <= '1' WHEN (OP_CODE = "01100" OR OP_CODE = "01101"
     OR (OP_CODE >= "10101" AND OP_CODE <= "11000")) ELSE
     '0'; -- DM_ADDR. 1 when DM[SP] else 0 (DM[ALU_RESULT]).
-    MEM_SIGNALS(3) <= '1' WHEN OP_CODE = "10101" ELSE
-    '0'; -- CALL_SIG. 1 when CALL.
+    MEM_SIGNALS(3) <= '1' WHEN (OP_CODE = "10101" OR OP_CODE = "10111") ELSE
+    '0'; -- CALL_OR_INT. 1 when CALL, INT.
     -- Register Writeback Enable
     MEM_SIGNALS(4) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR OP_CODE = "00110"
     OR (OP_CODE >= "00111" AND OP_CODE <= "01011")
