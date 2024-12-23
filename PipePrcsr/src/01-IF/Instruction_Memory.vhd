@@ -22,7 +22,7 @@ ENTITY Instruction_Memory IS
 END Instruction_Memory;
 
 ARCHITECTURE Instruction_Memory_arch OF Instruction_Memory IS
-  TYPE mem_type IS ARRAY (2 ** 16 - 1 DOWNTO 0) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
+  TYPE mem_type IS ARRAY (2 ** 12 - 1 DOWNTO 0) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
   SIGNAL memory       : mem_type;
   SIGNAL data_out_sig : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
