@@ -15,6 +15,7 @@ class InstructionFormat(Enum):
         RSRC2 = 2
         RDST = 3
         IMMEDIATE = 4
+        INDEX = 5
 
 class Instruction:
     def __init__(self, opcode, operands):
@@ -34,7 +35,7 @@ ISA = {
     'HLT': Instruction(opcode_dict['HLT'], []),
     'SETC': Instruction(opcode_dict['SETC'], []),
     'RET': Instruction(opcode_dict['RET'], []),
-    # 'INT': Instruction(opcode_dict['INT'], []),
+    'INT': Instruction(opcode_dict['INT'], [InstructionFormat.INDEX]),
     'RTI': Instruction(opcode_dict['RTI'], []),
 
     # One-operand instructions
@@ -145,6 +146,8 @@ def assemble(parsed_line):
             rsrc2 = operand_to_binary(operands[i])
         elif format_type == InstructionFormat.RDST:
             rdst = operand_to_binary(operands[i])
+        elif format_type == InstructionFormat.INDEX:
+            extra = format(int(operands[i]), '02b')
         elif format_type == InstructionFormat.IMMEDIATE:
             has_immediate = True
             immediate = operand_to_binary(operands[i])
