@@ -19,7 +19,7 @@ ENTITY MEM IS
         IN_DATA_IN : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         OP_CODE_IN : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         -- Control Signals o/p
-        -- 1) IF Stage
+        -- 1) IF, ID Stage
         IS_RET_RTI : OUT STD_LOGIC := '0';
         -- 2) EX Stage
         UPDATE_FLAGS : OUT STD_LOGIC := '0';
@@ -30,14 +30,12 @@ ENTITY MEM IS
         -- Data o/p
         -- 1) IF Stage
         RET_RTI_ADDRESS : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        -- 2) ID Stage
-        OP_CODE_ID_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
-        -- 3) EX Stage
+        -- 2) EX Stage
         FLAGS_POPPED : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         OP_CODE_EX_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
         Rdst_EX_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         SP_WRITE_DATA : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := x"0FFF";
-        -- 4) WB Stage
+        -- 3) WB Stage
         ALU_RESULT_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         DM_DATA_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -124,9 +122,6 @@ BEGIN
     -- To IF Stage
     IS_RET_RTI <= MEM_SIGNALS(9);
     RET_RTI_ADDRESS <= DM_DATA;
-
-    -- To ID Stage
-    OP_CODE_ID_OUT <= OP_CODE_IN;
 
     -- To EX Stage
     UPDATE_FLAGS <= MEM_SIGNALS(5);
