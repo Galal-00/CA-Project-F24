@@ -33,6 +33,8 @@
 	OUT R0
 	POP R0
 	HLT
+	INT 0
+	INT 1
 
 # Invalid Memory Address Exception Handler
 .ORG 600
