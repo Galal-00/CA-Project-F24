@@ -100,6 +100,19 @@ ARCHITECTURE Ex_arch OF EX IS
     SIGNAL ALU_Result_Sig : STD_LOGIC_VECTOR(15 DOWNTO 0); --from alu to EX/MEM reg
     SIGNAL SP_inc_data_Sig : STD_LOGIC_VECTOR(15 DOWNTO 0); -- from the sp_inc_block adder to the EX/MEM reg
     SIGNAL Flags_ALU_TO_Reg : STD_LOGIC_VECTOR(2 DOWNTO 0); -- from ALU to flag reg
+    SIGNAL MEM_CONTROL_FLUSH_MUX : STD_LOGIC_VECTOR(9 DOWNTO 0); -- from flush mux to EX/MEM reg
+    SIGNAL WB_CONTROL_FLUSH_MUX : STD_LOGIC_VECTOR(3 DOWNTO 0); -- from flush mux to EX/MEM reg
+    component EX_FLUSH_MUX is
+        port (
+            EX_MEM_FLUSH : IN STD_LOGIC;
+            MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+            WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+            MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+            WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+            
+        );
+    end component;
+    
     COMPONENT Src_Mux IS
         PORT (
             ReadData1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -290,8 +303,8 @@ BEGIN
     PORT MAP(
         Clk => Clk,
         Rst => Rst,
-        Mem_Control_Sigs => Mem_Control_Sigs,
-        Wb_Control_Sigs => Wb_Control_Sigs,
+        Mem_Control_Sigs => MEM_CONTROL_FLUSH_MUX, -- theses are the output signals from the flush mux
+        Wb_Control_Sigs => WB_CONTROL_FLUSH_MUX,-- theses are the output signals from the flush mux
         ALU_Result_In => ALU_Result_Sig,
         PC_inc => PC_inc,
         Flags => Flags_Reg_Out,
@@ -320,5 +333,14 @@ BEGIN
         SP_INC => SP_INC,
         SP_Write_Data => SP_Write_Data,
         SP_inc_data_Out => SP_inc_data_Sig
+    );
+
+    EX_FLUSH_MUX_Inst : EX_FLUSH_MUX
+    PORT MAP(
+        EX_MEM_FLUSH => Ex_Flush,
+        MEM_SIGNALS_IN => Mem_Control_Sigs,
+        WB_SIGNALS_IN => Wb_Control_Sigs,
+        MEM_SIGNALS_OUT => MEM_CONTROL_FLUSH_MUX,
+        WB_SIGNALS_OUT => WB_CONTROL_FLUSH_MUX
     );
 END ARCHITECTURE;
