@@ -16,20 +16,20 @@ ENTITY Instruction_Memory IS
     exp_sig : IN STD_LOGIC;
     exp_num : IN STD_LOGIC;
     -- Interrupt index is either 0 or 1 -> IM[3] or IM[4]
-    int_sig   : IN STD_LOGIC;
+    int_sig : IN STD_LOGIC;
     int_index : IN STD_LOGIC
   );
 END Instruction_Memory;
 
 ARCHITECTURE Instruction_Memory_arch OF Instruction_Memory IS
   TYPE mem_type IS ARRAY (2 ** 12 - 1 DOWNTO 0) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
-  SIGNAL memory       : mem_type;
+  SIGNAL memory : mem_type := (OTHERS => (OTHERS => '0'));
   SIGNAL data_out_sig : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
   -- Output data (32 bits = 16x2) for the instruction memory
   -- Reset signal PC ← IM[0]
-  PROCESS (reset, address, exp_num, exp_sig, int_index)
+  PROCESS (reset, address, exp_num, exp_sig, int_sig, int_index)
   BEGIN
     IF reset = '1' THEN
       -- On reset, load the first instruction from memory
@@ -74,5 +74,7 @@ BEGIN
       data_out_sig(31 DOWNTO 16) <= memory(to_integer(unsigned(address) + 1));
     END IF;
   END PROCESS;
+
   data_out <= data_out_sig;
+
 END ARCHITECTURE;
