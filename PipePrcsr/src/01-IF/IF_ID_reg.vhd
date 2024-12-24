@@ -22,14 +22,18 @@ END ENTITY;
 
 ARCHITECTURE IF_ID_reg_arch OF IF_ID_reg IS
 BEGIN
-    PROCESS (clk, reset, IF_ID_write, IF_ID_flush)
+    PROCESS (clk, reset)
     BEGIN
-        IF reset = '1' OR IF_ID_flush = '1' THEN
+        IF reset = '1' THEN
             PC_out <= (OTHERS => '0');
             PC_inc_out <= (OTHERS => '0');
             Instruction_out <= (OTHERS => '0');
         ELSIF clk'EVENT AND clk = '1' THEN
-            IF IF_ID_write = '1' THEN ----- M4 3AREF DA BY3ML EH
+            IF IF_ID_flush = '1' THEN
+                PC_out <= (OTHERS => '0');
+                PC_inc_out <= (OTHERS => '0');
+                Instruction_out <= (OTHERS => '0');
+            ELSIF IF_ID_write = '1' THEN
                 PC_out <= PC;
                 PC_inc_out <= PC_inc;
                 Instruction_out <= Instruction;
