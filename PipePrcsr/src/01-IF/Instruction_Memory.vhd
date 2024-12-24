@@ -69,9 +69,9 @@ BEGIN
     ELSE
       -- Normal operation
       -- lower 16 bits
-      data_out_sig(15 DOWNTO 0) <= memory(to_integer(unsigned(address)));
+      data_out_sig(15 DOWNTO 0) <= memory(to_integer(unsigned(address(11 DOWNTO 0))));
       -- upper 16 bits
-      data_out_sig(31 DOWNTO 16) <= memory(to_integer(unsigned(address) + 1));
+      data_out_sig(31 DOWNTO 16) <= memory(to_integer(unsigned(address(11 DOWNTO 0)) + 1));
     END IF;
   END PROCESS;
 
