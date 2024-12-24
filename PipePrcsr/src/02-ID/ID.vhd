@@ -47,6 +47,7 @@ ENTITY ID IS
         IF_ID_WRITE : OUT STD_LOGIC := '1';
         PC_STALL : OUT STD_LOGIC := '0';
         IF_ID_FLUSH : OUT STD_LOGIC := '0';
+        --  2) EX Stage
         EX_FLUSH : OUT STD_LOGIC := '0';
         --  2) ID Stage
         -- o/p data signals
