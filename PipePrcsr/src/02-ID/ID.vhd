@@ -23,7 +23,7 @@ ENTITY ID IS
         RegWrite : IN STD_LOGIC;
         Rdst : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         WR_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MEM_OpCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        IS_RET_RTI : IN STD_LOGIC;
 
         -- o/p control signals:
         --  1) IF stage
@@ -42,7 +42,15 @@ ENTITY ID IS
         MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         --  4) WB stage
         WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
+        -- o/p hazard (including flush) signals
+        --  1) IF Stage
+        IF_ID_WRITE : OUT STD_LOGIC := '1';
+        PC_STALL : OUT STD_LOGIC := '0';
+        IF_ID_FLUSH : OUT STD_LOGIC := '0';
+        EX_FLUSH : OUT STD_LOGIC := '0';
+        --  2) ID Stage
         -- o/p data signals
+        -- 1) EX stage
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
         PC_INC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
         Rdata1_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
@@ -51,7 +59,9 @@ ENTITY ID IS
         Rsrc2_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
         Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
         IMM_OFFSET_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-        OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0')
+        OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0) := (OTHERS => '0');
+        --  2) EPC
+        EXP_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0')
     );
 END ENTITY ID;
 
@@ -118,6 +128,38 @@ ARCHITECTURE ID_arch OF ID IS
         );
     END COMPONENT;
 
+    COMPONENT HDU IS
+        PORT (
+            -- Control signals i/p
+            ID_EX_MEM_READ : IN STD_LOGIC;
+            Rsrc1_EN : IN STD_LOGIC;
+            Rsrc2_EN : IN STD_LOGIC;
+            -- Data i/p
+            ID_EX_Rdst : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            Rsrc1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            Rsrc2 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            -- Hazard Signals o/p
+            STALL : OUT STD_LOGIC;
+            IF_ID_WRITE : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
+    COMPONENT FLUSH_UNIT IS
+        PORT (
+            -- Control signals i/p
+            Store_EN_EPC : IN STD_LOGIC;
+            EXP_SRC : IN STD_LOGIC;
+            BRANCH_FLUSH : IN STD_LOGIC;
+            IS_RET_RTI : IN STD_LOGIC;
+            -- Data i/p
+            OP_CODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+            -- Hazard Signals o/p
+            IF_ID_FLUSH : OUT STD_LOGIC;
+            ID_EX_FLUSH : OUT STD_LOGIC;
+            EX_FLUSH : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
     COMPONENT ID_FLUSH_MUX IS
         PORT (
             -- I/P flush, stall, pipeline control signals
@@ -174,13 +216,14 @@ ARCHITECTURE ID_arch OF ID IS
         );
     END COMPONENT;
 
-    SIGNAL DUMMY_RSRC1_EN, DUMMY_RSRC2_EN : STD_LOGIC;
-    SIGNAL DUMMY_ID_EX_FLUSH, DUMMY_STALL : STD_LOGIC := '0';
+    SIGNAL Rsrc1_EN, Rsrc2_EN : STD_LOGIC;
+    SIGNAL ID_EX_FLUSH : STD_LOGIC := '0';
 
     -- EPC inputs
     SIGNAL Store_EN_EPC, EXP_SRC : STD_LOGIC := '0';
-    -- EPC output
-    SIGNAL EXP_PC : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
+
+    -- HDU outputs
+    SIGNAL HDU_STALL : STD_LOGIC := '0';
 
     -- ID_FLUSH_MUX inputs
     SIGNAL ID_FLUSH_MUX_EX_SIGNALS_IN : STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0');
@@ -204,7 +247,7 @@ BEGIN
         INSTR => INSTR, SP_INC => SP_INC, ALU_RESULT => ALU_RESULT,
         EX_OpCode => EX_OpCode, PC => PC,
         -- Hazard Detection Unit (ID stage)
-        Rsrc1_EN => DUMMY_RSRC1_EN, Rsrc2_EN => DUMMY_RSRC2_EN,
+        Rsrc1_EN => Rsrc1_EN, Rsrc2_EN => Rsrc2_EN,
         -- Exceptions (ID stage)
         Store_EN_EPC => Store_EN_EPC, EXP_SRC => EXP_SRC,
         -- Exceptions and Interrupts (IF stage)
@@ -230,9 +273,29 @@ BEGIN
         EPC_data => EXP_PC
     );
 
+    HDU_inst : HDU PORT MAP(
+        -- Control signals i/p
+        ID_EX_MEM_READ => ID_EX_MEM_READ,
+        Rsrc1_EN => Rsrc1_EN, Rsrc2_EN => Rsrc2_EN,
+        -- Data i/p
+        ID_EX_Rdst => ID_EX_Rdst, Rsrc1 => INSTR(10 DOWNTO 8), Rsrc2 => INSTR(7 DOWNTO 5),
+        -- Hazard Signals o/p
+        STALL => HDU_STALL, IF_ID_WRITE => IF_ID_WRITE
+    );
+
+    FLUSH_UNIT_inst : FLUSH_UNIT PORT MAP(
+        -- Control signals i/p
+        Store_EN_EPC => Store_EN_EPC, EXP_SRC => EXP_SRC,
+        BRANCH_FLUSH => FLUSH, IS_RET_RTI => IS_RET_RTI,
+        -- Data i/p
+        OP_CODE => INSTR(15 DOWNTO 11),
+        -- Hazard Signals o/p
+        IF_ID_FLUSH => IF_ID_FLUSH, ID_EX_FLUSH => ID_EX_FLUSH, EX_FLUSH => EX_FLUSH
+    );
+
     ID_FLUSH_MUX_inst : ID_FLUSH_MUX PORT MAP(
         -- I/P flush, stall, pipeline control signals
-        ID_EX_FLUSH => DUMMY_ID_EX_FLUSH, STALL => DUMMY_STALL,
+        ID_EX_FLUSH => ID_EX_FLUSH, STALL => HDU_STALL,
         EX_SIGNALS_IN => ID_FLUSH_MUX_EX_SIGNALS_IN,
         MEM_SIGNALS_IN => ID_FLUSH_MUX_MEM_SIGNALS_IN,
         WB_SIGNALS_IN => ID_FLUSH_MUX_WB_SIGNALS_IN,
@@ -271,6 +334,10 @@ BEGIN
         OP_CODE_OUT => OP_CODE_OUT
     );
 
+    -- To IF stage
+    PC_STALL <= HDU_STALL;
+
+    -- To EX stage
     ALU_SRC1 <= ID_EX_REG_EX_SIGNALS_OUT(0);
     ALU_SRC2 <= ID_EX_REG_EX_SIGNALS_OUT(1);
     JUMP_UNCOND <= ID_EX_REG_EX_SIGNALS_OUT(2);
@@ -280,4 +347,5 @@ BEGIN
     RESET_FLAGS <= ID_EX_REG_EX_SIGNALS_OUT(11 DOWNTO 9);
     SP_INC_SIG <= ID_EX_REG_EX_SIGNALS_OUT(12);
     MEM_READ <= ID_EX_REG_EX_SIGNALS_OUT(13);
+
 END ARCHITECTURE ID_arch;
