@@ -47,7 +47,6 @@ ARCHITECTURE IF_ARCH OF IF_Stage IS
     COMPONENT PC IS
         PORT (
             clk : IN STD_LOGIC;
-            rst : IN STD_LOGIC;
             pc_mux_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             pc_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             -- Stall signal to stop the PC from incrementing
@@ -128,7 +127,6 @@ BEGIN
     PC_inst : PC
     PORT MAP(
         clk => clk,
-		  rst => reset,
         stall => PC_stall,
         pc_mux_out => PC_Mux_out_sig,
         pc_out => PC_out_pcreg
