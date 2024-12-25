@@ -25,18 +25,18 @@ END ENTITY ForwardingUnit;
 ARCHITECTURE ForwardingUnit_arch OF ForwardingUnit IS
 
 BEGIN
-    ForwardA <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc1_ID_EX) ELSE
-        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb /= "000" AND Rdst_Mem_Wb = Rsrc1_ID_EX
-        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc1_ID_EX)) ELSE
-        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc1_ID_EX AND OpCode_Mem = "00110") ELSE
-        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb /= "000" AND Rdst_Mem_Wb = Rsrc1_ID_EX AND OpCode_Mem = "00110" 
-        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc1_ID_EX)) ELSE
+    ForwardA <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
+        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND NOT (OpCode_Wb = "00110")
+        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND NOT (OpCode_Mem = "00110"))) ELSE
+        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND OpCode_Mem = "00110") ELSE
+        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND OpCode_Wb = "00110"
+        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX)) ELSE
         "100";
-    ForwardB <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc2_ID_EX) ELSE
-        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb /= "000" AND Rdst_Mem_Wb = Rsrc2_ID_EX 
-        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc2_ID_EX)) ELSE
-        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc2_ID_EX AND OpCode_Mem = "00110") ELSE
-        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb /= "000" AND Rdst_Mem_Wb = Rsrc2_ID_EX AND OpCode_Mem = "00110"
-        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem /= "000" AND Rdst_Ex_Mem = Rsrc2_ID_EX)) ELSE
+    ForwardB <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
+        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND NOT (OpCode_Wb = "00110")
+        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND NOT (OpCode_Mem = "00110"))) ELSE
+        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND OpCode_Mem = "00110") ELSE
+        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND OpCode_Wb = "00110"
+        AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX)) ELSE
         "100";
 END ARCHITECTURE;

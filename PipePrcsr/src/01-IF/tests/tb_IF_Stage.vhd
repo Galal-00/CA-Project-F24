@@ -82,9 +82,9 @@ BEGIN
         CONSTANT max_cycles : INTEGER := 10; -- Set maximum clock cycles
     BEGIN
         WHILE cycles < max_cycles LOOP
-            CLK <= '1';
-            WAIT FOR CLK_PERIOD / 2;
             CLK <= '0';
+            WAIT FOR CLK_PERIOD / 2;
+            CLK <= '1';
             WAIT FOR CLK_PERIOD / 2;
             cycles := cycles + 1;
         END LOOP;
@@ -116,8 +116,9 @@ BEGIN
         -- Wait for signal propagation
         WAIT FOR CLK_PERIOD;
         PCsrc <= '1';
-        WAIT FOR CLK_PERIOD;
+        WAIT FOR CLK_PERIOD / 2;
         PCsrc <= '0';
+        WAIT FOR CLK_PERIOD / 2;
         WAIT FOR CLK_PERIOD;
 
         -- Add assertions for Test Case 1

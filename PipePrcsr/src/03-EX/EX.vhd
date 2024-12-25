@@ -31,7 +31,7 @@ ENTITY EX IS
         -- Ex control sigs
         Reset_Flags : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Jump_Cond : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        Jump_Uncond :  IN STD_LOGIC;
+        Jump_Uncond : IN STD_LOGIC;
         SP_INC : IN STD_LOGIC;
         Set_Flags : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         ALU_Src1 : IN STD_LOGIC;
@@ -77,6 +77,7 @@ ENTITY EX IS
         Jump_Addr : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PCSrc : OUT STD_LOGIC;
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        EX_OpCode : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
         -- Output data from the Ex/Mem reg
         ALU_Result : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -98,6 +99,7 @@ ARCHITECTURE Ex_arch OF EX IS
 
     SIGNAL Src1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Src2 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL FWD_ReadData1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL ForwardA : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL ForwardB : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL Flags_Reg_Out : STD_LOGIC_VECTOR(2 DOWNTO 0); -- from flag reg to branch unit and EX/MEM reg
@@ -106,17 +108,18 @@ ARCHITECTURE Ex_arch OF EX IS
     SIGNAL Flags_ALU_TO_Reg : STD_LOGIC_VECTOR(2 DOWNTO 0); -- from ALU to flag reg
     SIGNAL MEM_CONTROL_FLUSH_MUX : STD_LOGIC_VECTOR(9 DOWNTO 0); -- from flush mux to EX/MEM reg
     SIGNAL WB_CONTROL_FLUSH_MUX : STD_LOGIC_VECTOR(3 DOWNTO 0); -- from flush mux to EX/MEM reg
-    component EX_FLUSH_MUX is
-        port (
+
+    COMPONENT EX_FLUSH_MUX IS
+        PORT (
             EX_MEM_FLUSH : IN STD_LOGIC;
             MEM_SIGNALS_IN : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
             WB_SIGNALS_IN : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
             MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
             WB_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
-            
+
         );
-    end component;
-    
+    END COMPONENT;
+
     COMPONENT Src_Mux IS
         PORT (
             ReadData1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -133,6 +136,18 @@ ARCHITECTURE Ex_arch OF EX IS
             Src1 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             Src2 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
 
+        );
+    END COMPONENT;
+
+    COMPONENT Rdata1_MUX IS
+        PORT (
+            ForwardA : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            ReadData1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Fwd_Ex_Mem : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Fwd_Mem_WB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_Ex_Mem : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_Mem_WB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            FWD_ReadData1 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
         );
     END COMPONENT;
 
@@ -243,6 +258,7 @@ BEGIN
 
     PC_OUT <= PC_IN;
     ID_EX_MEM_READ_OUT <= ID_EX_MEM_READ_IN;
+    EX_OpCode <= OpCode;
 
     Src_Mux_Inst : Src_Mux
     PORT MAP(
@@ -259,6 +275,17 @@ BEGIN
         ForwardB => ForwardB,
         Src1 => Src1,
         Src2 => Src2
+    );
+
+    Rdata1_MUX_Inst : Rdata1_MUX
+    PORT MAP(
+        ForwardA => ForwardA,
+        ReadData1 => ReadData1,
+        Fwd_Ex_Mem => Fwd_Ex_Mem,
+        Fwd_Mem_WB => Fwd_Mem_WB,
+        IN_Ex_Mem => IN_Ex_Mem,
+        IN_Mem_WB => IN_Mem_WB,
+        FWD_ReadData1 => FWD_ReadData1
     );
 
     ALU_Inst : ALU
@@ -288,7 +315,7 @@ BEGIN
         Jump_Unconditional => Jump_Uncond,
         Branch_Enable => Branch,
         PC_inc => PC_inc,
-        Target_Address => IMM,
+        Target_Address => FWD_ReadData1,
         PCSrc => PCSrc,
         Jump_Address => Jump_Addr
     );
@@ -312,11 +339,11 @@ BEGIN
         Clk => Clk,
         Rst => Rst,
         Mem_Control_Sigs => MEM_CONTROL_FLUSH_MUX, -- theses are the output signals from the flush mux
-        Wb_Control_Sigs => WB_CONTROL_FLUSH_MUX,-- theses are the output signals from the flush mux
+        Wb_Control_Sigs => WB_CONTROL_FLUSH_MUX, -- theses are the output signals from the flush mux
         ALU_Result_In => ALU_Result_Sig,
         PC_inc => PC_inc,
         Flags => Flags_Reg_Out,
-        ReadData1 => ReadData1,
+        ReadData1 => FWD_ReadData1,
         Rdst => Rdst,
         OpCode => OpCode,
         IN_Port => IN_Port,

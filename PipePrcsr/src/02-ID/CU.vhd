@@ -122,14 +122,14 @@ BEGIN
     IF_SIGNALS(0) <= '1' WHEN (INVALID_MEM_EXP = '1' OR EMPTY_STACK_EXP = '1') ELSE
     '0'; -- EXP_SIG
     IF_SIGNALS(1) <= '1' WHEN INVALID_MEM_EXP = '1' ELSE
-    '0'; -- EXP_NUM
+    '0'; -- EXP_NUM. 1 when invalid memory exp, 0 when empty stack exp
 
     -- Interrupts:
     -- Opcode = "10111".
     -- INSTR(1) = index.
     IF_SIGNALS(2) <= '1' WHEN OP_CODE = "10111" ELSE
-    '0'; -- INT_SIG
-    IF_SIGNALS(3) <= INSTR(1); -- INT_INDEX
+    '0'; -- INT_SIG. 1 when INT
+    IF_SIGNALS(3) <= INSTR(1); -- INT_INDEX.
 
     -- Pipeline Control Signals (EX Stage)
     -- ALU
@@ -152,9 +152,9 @@ BEGIN
     EX_SIGNALS(7) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR
     (OP_CODE >= "01000" AND OP_CODE <= "01011")) ELSE
     '0'; -- SET_FLAGS(1). 1 when NOT, INC, ADD, SUB, AND, IADD else 0
-    EX_SIGNALS(8) <= '1' WHEN (OP_CODE = "00100" OR OP_CODE = "01000" OR OP_CODE = "01001"
+    EX_SIGNALS(8) <= '1' WHEN (OP_CODE = "00010" OR OP_CODE = "00100" OR OP_CODE = "01000" OR OP_CODE = "01001"
     OR OP_CODE = "01011") ELSE
-    '0'; -- SET_FLAGS(2). 1 when INC, ADD, SUB, IADD else 0
+    '0'; -- SET_FLAGS(2). 1 when SETC, INC, ADD, SUB, IADD else 0
     EX_SIGNALS(9) <= '1' WHEN (EX_Opcode = "10001") ELSE
     '0'; -- RESET_FLAGS(0). 1 when JZ in EX stage
     EX_SIGNALS(10) <= '1' WHEN (EX_Opcode = "10010") ELSE
@@ -207,8 +207,8 @@ BEGIN
     WB_SIGNALS(1) <= '1' WHEN OP_CODE = "00110" ELSE
     '0'; -- IN_SIG. 1 when IN
     -- Memory to Register
-    WB_SIGNALS(2) <= '0' WHEN (OP_CODE >= "01101" AND OP_CODE <= "01111") ELSE
-    '1'; -- MEM_TO_REG. 0 when POP, LDM, LDD
+    WB_SIGNALS(2) <= '0' WHEN (OP_CODE = "01101" AND OP_CODE = "01111") ELSE
+    '1'; -- MEM_TO_REG. 0 when POP, LDD
     -- Register Writeback Enable
     WB_SIGNALS(3) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR OP_CODE = "00110"
     OR (OP_CODE >= "00111" AND OP_CODE <= "01011")

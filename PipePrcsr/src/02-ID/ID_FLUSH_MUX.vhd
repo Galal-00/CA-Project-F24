@@ -29,7 +29,7 @@ BEGIN
 
     -- Flush Pipeline Control Signals (EX Stage)
     EX_SIGNALS_OUT <= EX_SIGNALS_IN WHEN FLUSH_RESULT = '0' ELSE
-        (OTHERS => '0');
+        (9 => EX_SIGNALS_IN(9), 10 => EX_SIGNALS_IN(10), 11 => EX_SIGNALS_IN(11), OTHERS => '0');
     -- Flush Pipeline Control Signals (MEM Stage)
     MEM_SIGNALS_OUT <= MEM_SIGNALS_IN WHEN FLUSH_RESULT = '0' ELSE
         (OTHERS => '0');

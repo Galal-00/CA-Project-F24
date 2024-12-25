@@ -17,14 +17,14 @@ ENTITY SP_Inc_Block IS
 END ENTITY SP_Inc_Block;
 
 ARCHITECTURE SP_Inc_Block OF SP_Inc_Block IS
-    SIGNAL SP_reg : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '1'); -- starts at location 2^12 - 1 (end of mem)
+    SIGNAL SP_reg : STD_LOGIC_VECTOR(15 DOWNTO 0) := x"0FFF"; -- starts at location 2^12 - 1 (end of mem)
     SIGNAL SP_Adrr : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
     PROCESS (Clk, Rst)
     BEGIN
         IF Rst = '1' THEN
-            SP_reg <= (OTHERS => '1');
+            SP_reg <= x"0FFF";
         ELSIF falling_edge(Clk) THEN
             IF SP_EN = '1' THEN
                 SP_reg <= SP_Write_Data;

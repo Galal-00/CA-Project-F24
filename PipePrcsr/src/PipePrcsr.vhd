@@ -181,6 +181,7 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
             Jump_Addr : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             PCSrc : OUT STD_LOGIC;
             PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            EX_OpCode : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
             -- Output data from the Ex/Mem reg
             ALU_Result : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -320,6 +321,7 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
     SIGNAL FROM_EX_JUMP_ADDR : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FROM_EX_PCSrc : STD_LOGIC;
     SIGNAL FROM_EX_PC_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL FROM_EX_EX_OpCode : STD_LOGIC_VECTOR(4 DOWNTO 0);
     -- Output data from the Ex/Mem reg
     SIGNAL FROM_EX_ALU_RESULT : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FROM_EX_PC_INC_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -404,7 +406,7 @@ BEGIN
         ALU_RESULT => FROM_EX_ALU_RESULT,
         SP_INC => FROM_EX_SP_inc_data_Out,
         PC_EX => FROM_EX_PC_OUT,
-        EX_OpCode => FROM_EX_OpCode_Out,
+        EX_OpCode => FROM_EX_EX_OpCode,
         -- i/p MEM Signals
         IS_RET_RTI => FROM_MEM_IS_RET_RTI,
         -- i/p WB Signals
@@ -509,6 +511,7 @@ BEGIN
         Jump_Addr => FROM_EX_JUMP_ADDR,
         PCSrc => FROM_EX_PCSrc,
         PC_OUT => FROM_EX_PC_OUT,
+        EX_OpCode => FROM_EX_EX_OpCode,
         -- Output data from the Ex/Mem reg
         ALU_Result => FROM_EX_ALU_RESULT,
         PC_inc_Out => FROM_EX_PC_INC_OUT,

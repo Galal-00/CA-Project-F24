@@ -25,12 +25,12 @@ BEGIN
             IF Update_Flags = '1' THEN
                 Flags_reg <= Flags_Popped;
             ELSE
-                -- set only the flags that are not to be reset, reset the rest
+                -- reset only the flags that are not to be set
                 FOR i IN 0 TO 2 LOOP
-                    IF Reset_Flags(i) = '1' THEN
-                        Flags_reg(i) <= '0';
-                    ELSIF Set_Flags(i) = '1' THEN
+                    IF Set_Flags(i) = '1' THEN
                         Flags_reg(i) <= Flags(i);
+                    ELSIF Reset_Flags(i) = '1' THEN
+                        Flags_reg(i) <= '0';
                     END IF;
                 END LOOP;
             END IF;
