@@ -19,11 +19,12 @@ ENTITY ID IS
         SP_INC : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_EX : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         EX_OpCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        -- i/p MEM Signals
+        IS_RET_RTI : IN STD_LOGIC;
         -- i/p WB Signals
         RegWrite : IN STD_LOGIC;
         Rdst : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         WR_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        IS_RET_RTI : IN STD_LOGIC;
 
         -- o/p control signals:
         --  1) IF stage
@@ -49,7 +50,6 @@ ENTITY ID IS
         IF_ID_FLUSH : OUT STD_LOGIC := '0';
         --  2) EX Stage
         EX_FLUSH : OUT STD_LOGIC := '0';
-        --  2) ID Stage
         -- o/p data signals
         -- 1) EX stage
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');

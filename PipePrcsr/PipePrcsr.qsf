@@ -38,7 +38,8 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEMA5F31C6
-set_global_assignment -name TOP_LEVEL_ENTITY EX
+set_global_assignment -name TOP_LEVEL_ENTITY PipePrcsr
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 6
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "09:33:08  DECEMBER 10, 2024"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Lite Edition"
@@ -79,20 +80,39 @@ set_global_assignment -name EDA_TEST_BENCH_FILE "src/02-ID/tests/tb_ID_FLUSH_MUX
 set_global_assignment -name EDA_TEST_BENCH_FILE "src/02-ID/tests/tb_ID_EX_reg.vhd" -section_id tb_ID_EX_reg
 set_global_assignment -name EDA_TEST_BENCH_FILE "src/02-ID/tests/tb_CU.vhd" -section_id tb_CU
 set_global_assignment -name EDA_TEST_BENCH_FILE "src/02-ID/tests/tb_ID.vhd" -section_id tb_ID
+set_global_assignment -name VHDL_FILE src/PipePrcsr.vhd
+set_global_assignment -name VHDL_FILE "src/01-IF/PC_Mux.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/PC_ADD.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/PC.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/Next_PC_Unit.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/Instruction_Memory.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/IF_Stage.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/IF_ID_reg.vhd"
+set_global_assignment -name VHDL_FILE "src/01-IF/FCU.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/reg_file.vhdl"
+set_global_assignment -name VHDL_FILE "src/02-ID/ID_FLUSH_MUX.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/ID_EX_reg.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/ID.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/HDU.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/FLUSH_UNIT.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/EPC.vhd"
+set_global_assignment -name VHDL_FILE "src/02-ID/CU.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/Src_Mux.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/SP_Inc_Block.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/ForwardingUnit.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/Flags_reg.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/EX_MEM_reg.vhd"
+set_global_assignment -name VHDL_FILE "src/03-EX/EX_FLUSH_MUX.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/EX.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/Branch_Unit.vhd"
 set_global_assignment -name VHDL_FILE "src/03-EX/ALU.vhd"
-set_global_assignment -name VHDL_FILE "src/02-ID/reg_file.vhdl"
-set_global_assignment -name VHDL_FILE "src/02-ID/ID_FLUSH_MUX.vhd"
-set_global_assignment -name VHDL_FILE "src/02-ID/ID_EX_reg.vhd"
-set_global_assignment -name VHDL_FILE "src/02-ID/ID.vhd"
-set_global_assignment -name VHDL_FILE "src/02-ID/EPC.vhd"
-set_global_assignment -name VHDL_FILE "src/02-ID/CU.vhd"
+set_global_assignment -name VHDL_FILE "src/04-MEM/SP_DEC_BLOCK.vhd"
+set_global_assignment -name VHDL_FILE "src/04-MEM/PUSH_POP_FLAGS.vhd"
+set_global_assignment -name VHDL_FILE "src/04-MEM/MEM_WB_reg.vhd"
+set_global_assignment -name VHDL_FILE "src/04-MEM/MEM.vhd"
+set_global_assignment -name VHDL_FILE "src/04-MEM/DM.vhd"
+set_global_assignment -name VHDL_FILE "src/05-WB/WB.vhd"
+set_global_assignment -name VHDL_FILE "src/05-WB/OUT_UNIT.vhd"
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
