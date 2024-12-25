@@ -182,7 +182,7 @@ def output_to_file(file_path, machine_code):
 if __name__ == '__main__':
     # print debug
 
-    file_path = 'Assembler/asm_example.asm'
+    file_path = 'Assembler/testcase1.asm'
     if os.path.exists(file_path):
         parsed_lines = parse_file(file_path)
         
@@ -226,7 +226,7 @@ if __name__ == '__main__':
                 else:
                     print(f"{machine_code}")
                     output_list.append(machine_code)
-        output_to_file('Assembler/asm_example.mem', '\n'.join(output_list))
+        output_to_file('Assembler/testcase1.mem', '\n'.join(output_list))
 
 
     else:

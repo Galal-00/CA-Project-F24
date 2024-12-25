@@ -26,7 +26,6 @@ ARCHITECTURE DM_arch OF DM IS
     TYPE mem_type IS ARRAY (2 ** 12 - 1 DOWNTO 0) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL memory : mem_type := (OTHERS => (OTHERS => '0'));
 
-    SIGNAL DM_DATA_OUT_SIG : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DM_ADDR : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DM_DATA_IN_SIG : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
@@ -35,10 +34,10 @@ BEGIN
     PROCESS (CLK, RST)
     BEGIN
         IF RST = '1' THEN
-            memory <= (OTHERS => (OTHERS => '0'));
+            -- memory <= (OTHERS => (OTHERS => '0'));
         ELSIF falling_edge(CLK) THEN
             IF MEM_READ = '1' THEN
-                DM_DATA_OUT_SIG <= memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0))));
+                DM_DATA <= memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0)))); -- Data Memory Output.
             ELSIF MEM_WRITE = '1' THEN
                 memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0)))) <= DM_DATA_IN_SIG;
             END IF;
@@ -49,7 +48,5 @@ BEGIN
         SP_INC; -- Data Memory Address. 
     DM_DATA_IN_SIG <= Rdata1 WHEN CALL_OR_INT = '0' ELSE
         PC_INC_MODIFIED; -- Data Memory Input.
-
-    DM_DATA <= DM_DATA_OUT_SIG; -- Data Memory Output.
 
 END ARCHITECTURE;

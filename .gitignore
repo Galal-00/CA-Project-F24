@@ -6,6 +6,7 @@
 *.qws
 *.rpt
 *.bak
+PipePrcsr/c5_pin_model_dump.txt
 
 # generated folders excludes
 */db/
