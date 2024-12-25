@@ -53,7 +53,8 @@ ARCHITECTURE behavior OF tb_IF_Stage IS
     SIGNAL Instruction     : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     -- Clock period definition
-    CONSTANT CLK_PERIOD : TIME := 10 ns;
+    CONSTANT CLK_PERIOD : TIME := 100 ps;
+    
 
 BEGIN
     -- Instantiate the Unit Under Test (UUT)
@@ -73,16 +74,21 @@ BEGIN
             PC_out_inc      => PC_out_inc,
             Instruction     => Instruction
         );
+        
 
     -- Clock process
     clk_process : PROCESS
+        VARIABLE cycles : INTEGER := 0;
+        CONSTANT max_cycles : INTEGER := 10; -- Set maximum clock cycles
     BEGIN
-        WHILE TRUE LOOP
+        WHILE cycles < max_cycles LOOP
             CLK <= '1';
             WAIT FOR CLK_PERIOD / 2;
             CLK <= '0';
             WAIT FOR CLK_PERIOD / 2;
+            cycles := cycles + 1;
         END LOOP;
+        WAIT;
     END PROCESS;
 
     -- Stimulus process with assertions
@@ -98,23 +104,27 @@ BEGIN
 
         -- Test Case 1
         -- Jump to instruction no. 1024 (NOP)
-        jump_addr <= std_logic_vector(to_unsigned(1024, 16));
+        jump_addr <= std_logic_vector(to_unsigned(1536, 16));
         RET_RTI_addr <= x"0001";
         IF_SIGNALS_IN <= "0000";
         is_RET_RTI <= '0';
-        PCsrc <= '1';
+        PCsrc <= '0';
         IF_ID_write <= '1';
         IF_ID_flush <= '0';
         PC_stall <= '0';
 
         -- Wait for signal propagation
         WAIT FOR CLK_PERIOD;
+        PCsrc <= '1';
+        WAIT FOR CLK_PERIOD;
+        PCsrc <= '0';
+        WAIT FOR CLK_PERIOD;
 
         -- Add assertions for Test Case 1
-        ASSERT PC_out = std_logic_vector(to_unsigned(1024, 16))
-            REPORT "PC_out mismatch in Test Case 1! Expected: " & integer'image(1024) & ", Got: " & integer'image(to_integer(unsigned(PC_out))) SEVERITY ERROR;
-        ASSERT PC_out_inc = std_logic_vector(to_unsigned(1025, 16))
-            REPORT "PC_out_inc mismatch in Test Case 1! Expected: " & integer'image(1025) & ", Got: " & integer'image(to_integer(unsigned(PC_out_inc))) SEVERITY ERROR;
+        ASSERT PC_out = std_logic_vector(to_unsigned(1536, 16))
+            REPORT "PC_out mismatch in Test Case 1! Expected: " & integer'image(1536) & ", Got: " & integer'image(to_integer(unsigned(PC_out))) SEVERITY ERROR;
+        ASSERT PC_out_inc = std_logic_vector(to_unsigned(1537, 16))
+            REPORT "PC_out_inc mismatch in Test Case 1! Expected: " & integer'image(1537) & ", Got: " & integer'image(to_integer(unsigned(PC_out_inc))) SEVERITY ERROR;
         ASSERT Instruction(15 DOWNTO 0) = x"0000"
             REPORT "Instruction mismatch in Test Case 1! Expected: 0000, Got: " & integer'image(to_integer(unsigned(Instruction(15 DOWNTO 0)))) SEVERITY ERROR;
         REPORT "Test Case 1: jump_addr = " & integer'image(to_integer(unsigned(jump_addr)));
