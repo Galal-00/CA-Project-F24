@@ -36,6 +36,7 @@ ARCHITECTURE IF_ARCH OF IF_Stage IS
         PORT (
             address : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             data_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+            data_out_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             reset : IN STD_LOGIC;
             exp_sig : IN STD_LOGIC;
             exp_num : IN STD_LOGIC;
@@ -110,6 +111,7 @@ ARCHITECTURE IF_ARCH OF IF_Stage IS
     SIGNAL PC_out_pcreg : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL PC_out_ADD : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Instruction_out_sig : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Instruction_out_PC_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Next_PC_sig : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL PC_inc_sel_sig : STD_LOGIC_VECTOR(1 DOWNTO 0);
 BEGIN
@@ -117,6 +119,7 @@ BEGIN
     PORT MAP(
         address => PC_out_pcreg,
         data_out => Instruction_out_sig,
+        data_out_PC => Instruction_out_PC_sig,
         reset => reset,
         exp_sig => IF_SIGNALS_IN(0),
         exp_num => IF_SIGNALS_IN(1),
@@ -161,7 +164,7 @@ BEGIN
         PC_inc => PC_out_ADD,
         jump_addr => jump_addr,
         RET_RTI_addr => RET_RTI_addr,
-        IM_addr => Instruction_out_sig(15 DOWNTO 0),
+        IM_addr => Instruction_out_PC_sig,
         Next_PC_sel => Next_PC_sig,
         PC_mux_out => PC_Mux_out_sig
     );
