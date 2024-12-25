@@ -17,10 +17,15 @@ ENTITY WB IS
         -- Control signals o/p
         REG_WRITE : OUT STD_LOGIC;
         -- Data o/p
-        OUT_DATA : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        -- 1) ID:
         Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         REG_WB_DATA : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+        -- 2) EX:
+        FWD_ALU_MEM_WB : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        FWD_IN_MEM_WB : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        OP_CODE_OUT : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        -- 3) Others:
+        OUT_DATA : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
 END ENTITY WB;
 
@@ -69,6 +74,8 @@ BEGIN
 
     -- To EX stage
     OP_CODE_OUT <= OP_CODE_IN;
+    FWD_ALU_MEM_WB <= ALU_RESULT;
+    FWD_IN_MEM_WB <= IN_DATA;
 
     -- To ID and EX stages
     Rdst_OUT <= Rdst_IN;

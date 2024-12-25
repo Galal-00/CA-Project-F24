@@ -37,6 +37,7 @@ ENTITY EX IS
         ALU_Src1 : IN STD_LOGIC;
         ALU_Src2 : IN STD_LOGIC;
         Ex_Flush : IN STD_LOGIC;
+        ID_EX_MEM_READ_IN : IN STD_LOGIC;
         Update_Flags : IN STD_LOGIC; -- recieved from mem stage
         Branch : IN STD_LOGIC;
         SP_EN : IN STD_LOGIC; -- comes form the mem stage Mem_Control_Sigs(6)
@@ -53,6 +54,7 @@ ENTITY EX IS
         Rsrc1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Rsrc2 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         OpCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        PC_IN : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_inc : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
 
         -- input data forwarded from the next stages registers
@@ -74,6 +76,7 @@ ENTITY EX IS
         -- Output data
         Jump_Addr : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PCSrc : OUT STD_LOGIC;
+        PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         -- Output data from the Ex/Mem reg
         ALU_Result : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -85,6 +88,7 @@ ENTITY EX IS
         Flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
 
         -- Output control signals
+        ID_EX_MEM_READ_OUT : OUT STD_LOGIC;
         Mem_Control_Sigs_Out : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
         Wb_Control_Sigs_Out : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
     );
@@ -236,6 +240,10 @@ ARCHITECTURE Ex_arch OF EX IS
         );
     END COMPONENT;
 BEGIN
+
+    PC_OUT <= PC_IN;
+    ID_EX_MEM_READ_OUT <= ID_EX_MEM_READ_IN;
+
     Src_Mux_Inst : Src_Mux
     PORT MAP(
         ReadData1 => ReadData1,
