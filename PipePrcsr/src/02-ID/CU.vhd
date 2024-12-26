@@ -54,7 +54,7 @@ ENTITY CU IS
         -- Exceptions and Interrupts (IF stage)
         IF_SIGNALS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (EX Stage)
-        EX_SIGNALS : OUT STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0');
+        EX_SIGNALS : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (MEM Stage)
         MEM_SIGNALS : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
         -- Pipeline Control Signals (WB Stage)
@@ -168,6 +168,8 @@ BEGIN
     EX_SIGNALS(13) <= '1' WHEN (OP_CODE = "01101" OR OP_CODE = "01111"
     OR OP_CODE = "10110" OR OP_CODE = "11000") ELSE
     '0'; -- MEM_READ. 1 WHEN POP, LDD, RET, RTI
+    EX_SIGNALS(14) <= Rsrc1_EN;
+    EX_SIGNALS(15) <= Rsrc2_EN;
 
     -- Pipeline Control Signals (MEM Stage)
     -- Data Memory
@@ -207,7 +209,7 @@ BEGIN
     WB_SIGNALS(1) <= '1' WHEN OP_CODE = "00110" ELSE
     '0'; -- IN_SIG. 1 when IN
     -- Memory to Register
-    WB_SIGNALS(2) <= '0' WHEN (OP_CODE = "01101" AND OP_CODE = "01111") ELSE
+    WB_SIGNALS(2) <= '0' WHEN (OP_CODE = "01101" OR OP_CODE = "01111") ELSE
     '1'; -- MEM_TO_REG. 0 when POP, LDD
     -- Register Writeback Enable
     WB_SIGNALS(3) <= '1' WHEN (OP_CODE = "00011" OR OP_CODE = "00100" OR OP_CODE = "00110"

@@ -26,7 +26,7 @@ BEGIN
         IF Rst = '1' THEN
             SP_reg <= x"0FFF";
         ELSIF falling_edge(Clk) THEN
-            IF SP_EN = '1' THEN
+            IF SP_EN = '1' AND (SP_WRITE_DATA <= x"0FFF") THEN
                 SP_reg <= SP_Write_Data;
             END IF;
 

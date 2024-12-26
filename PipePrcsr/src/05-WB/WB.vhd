@@ -74,7 +74,8 @@ BEGIN
 
     -- To EX stage
     OP_CODE_OUT <= OP_CODE_IN;
-    FWD_ALU_MEM_WB <= ALU_RESULT;
+    FWD_ALU_MEM_WB <= DM_DATA WHEN MEM_TO_REG = '0' ELSE
+        ALU_RESULT;
     FWD_IN_MEM_WB <= IN_DATA;
 
     -- To ID and EX stages

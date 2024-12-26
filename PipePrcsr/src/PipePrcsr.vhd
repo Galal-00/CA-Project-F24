@@ -80,6 +80,8 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
             RESET_FLAGS : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
             SP_INC_SIG : OUT STD_LOGIC := '0';
             MEM_READ : OUT STD_LOGIC := '0';
+            Rsrc1_EN_OUT : OUT STD_LOGIC := '0';
+            Rsrc2_EN_OUT: OUT STD_LOGIC := '0';
             --  3) MEM stage
             MEM_SIGNALS_OUT : OUT STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
             --  4) WB stage
@@ -145,6 +147,8 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
             Update_Flags : IN STD_LOGIC; -- recieved from mem stage
             Branch : IN STD_LOGIC;
             SP_EN : IN STD_LOGIC; -- comes form the mem stage Mem_Control_Sigs(6)
+            Rsrc1_EN : IN STD_LOGIC;
+            Rsrc2_EN : IN STD_LOGIC;
 
             -- Input control signals from next stages
             RegWrite_Ex_Mem : IN STD_LOGIC;
@@ -182,6 +186,7 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
             PCSrc : OUT STD_LOGIC;
             PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             EX_OpCode : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+            EX_Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             -- Output data from the Ex/Mem reg
             ALU_Result : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -291,6 +296,8 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
     SIGNAL FROM_ID_RESET_FLAGS : STD_LOGIC_VECTOR(2 DOWNTO 0) := (OTHERS => '0');
     SIGNAL FROM_ID_SP_INC_SIG : STD_LOGIC := '0';
     SIGNAL FROM_ID_MEM_READ : STD_LOGIC := '0';
+    SIGNAL FROM_ID_Rsrc1_EN_OUT : STD_LOGIC := '0';
+    SIGNAL FROM_ID_Rsrc2_EN_OUT : STD_LOGIC := '0';
     --  3) MEM stage
     SIGNAL FROM_ID_MEM_SIGNALS_OUT : STD_LOGIC_VECTOR(9 DOWNTO 0) := (OTHERS => '0');
     --  4) WB stage
@@ -322,6 +329,7 @@ ARCHITECTURE PipePrcsr_arch OF PipePrcsr IS
     SIGNAL FROM_EX_PCSrc : STD_LOGIC;
     SIGNAL FROM_EX_PC_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FROM_EX_EX_OpCode : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL FROM_EX_EX_Rdst_OUT : STD_LOGIC_VECTOR(2 DOWNTO 0);
     -- Output data from the Ex/Mem reg
     SIGNAL FROM_EX_ALU_RESULT : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FROM_EX_PC_INC_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -402,7 +410,7 @@ BEGIN
         -- i/p EX Signals
         FLUSH => FROM_EX_PCSrc, -- same as flush
         ID_EX_MEM_READ => FROM_EX_ID_EX_MEM_READ_OUT,
-        ID_EX_Rdst => FROM_EX_Rdst_Out,
+        ID_EX_Rdst => FROM_EX_EX_Rdst_OUT,
         ALU_RESULT => FROM_EX_ALU_RESULT,
         SP_INC => FROM_EX_SP_inc_data_Out,
         PC_EX => FROM_EX_PC_OUT,
@@ -427,6 +435,8 @@ BEGIN
         RESET_FLAGS => FROM_ID_RESET_FLAGS,
         SP_INC_SIG => FROM_ID_SP_INC_SIG,
         MEM_READ => FROM_ID_MEM_READ,
+        Rsrc1_EN_OUT => FROM_ID_Rsrc1_EN_OUT,
+        Rsrc2_EN_OUT => FROM_ID_Rsrc2_EN_OUT,
         --  3) MEM stage
         MEM_SIGNALS_OUT => FROM_ID_MEM_SIGNALS_OUT,
         --  4) WB stage
@@ -475,6 +485,8 @@ BEGIN
         Update_Flags => FROM_MEM_UPDATE_FLAGS, -- recieved from mem stage
         Branch => FROM_ID_BRANCH,
         SP_EN => FROM_MEM_SP_EN, -- comes form the mem stage Mem_Control_Sigs(6)
+        Rsrc1_EN => FROM_ID_Rsrc1_EN_OUT,
+        Rsrc2_EN => FROM_ID_Rsrc2_EN_OUT,
 
         -- Input control signals from next stages
         RegWrite_Ex_Mem => FROM_MEM_EX_MEM_REG_WRITE,
@@ -512,6 +524,7 @@ BEGIN
         PCSrc => FROM_EX_PCSrc,
         PC_OUT => FROM_EX_PC_OUT,
         EX_OpCode => FROM_EX_EX_OpCode,
+        EX_Rdst_OUT => FROM_EX_EX_Rdst_OUT,
         -- Output data from the Ex/Mem reg
         ALU_Result => FROM_EX_ALU_RESULT,
         PC_inc_Out => FROM_EX_PC_INC_OUT,

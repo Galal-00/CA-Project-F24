@@ -41,6 +41,8 @@ ENTITY EX IS
         Update_Flags : IN STD_LOGIC; -- recieved from mem stage
         Branch : IN STD_LOGIC;
         SP_EN : IN STD_LOGIC; -- comes form the mem stage Mem_Control_Sigs(6)
+        Rsrc1_EN : IN STD_LOGIC;
+        Rsrc2_EN : IN STD_LOGIC;
 
         -- Input control signals from next stages
         RegWrite_Ex_Mem : IN STD_LOGIC;
@@ -78,6 +80,7 @@ ENTITY EX IS
         PCSrc : OUT STD_LOGIC;
         PC_OUT : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         EX_OpCode : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        EX_Rdst_OUT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         -- Output data from the Ex/Mem reg
         ALU_Result : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         PC_inc_Out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -193,6 +196,8 @@ ARCHITECTURE Ex_arch OF EX IS
     COMPONENT ForwardingUnit IS
         PORT (
             -- input data
+            Rsrc1_EN : IN STD_LOGIC;
+            Rsrc2_EN : IN STD_LOGIC;
             EX_MEM_RegWrite : IN STD_LOGIC;
             MEM_WB_RegWrite : IN STD_LOGIC;
             Rdst_Ex_Mem : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -259,6 +264,7 @@ BEGIN
     PC_OUT <= PC_IN;
     ID_EX_MEM_READ_OUT <= ID_EX_MEM_READ_IN;
     EX_OpCode <= OpCode;
+    EX_Rdst_OUT <= Rdst;
 
     Src_Mux_Inst : Src_Mux
     PORT MAP(
@@ -322,6 +328,8 @@ BEGIN
 
     ForwardingUnit_Inst : ForwardingUnit
     PORT MAP(
+        Rsrc1_EN => Rsrc1_EN,
+        Rsrc2_EN => Rsrc2_EN,
         EX_MEM_RegWrite => RegWrite_Ex_Mem,
         MEM_WB_RegWrite => RegWrite_Mem_Wb,
         Rdst_Ex_Mem => Rdst_Ex_Mem,

@@ -51,7 +51,9 @@ ARCHITECTURE IF_ARCH OF IF_Stage IS
             pc_mux_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             pc_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             -- Stall signal to stop the PC from incrementing
-            stall : IN STD_LOGIC
+            stall : IN STD_LOGIC;
+            -- Exception signal
+            exp_sig : IN STD_LOGIC
         );
     END COMPONENT;
 
@@ -132,7 +134,8 @@ BEGIN
         clk => clk,
         stall => PC_stall,
         pc_mux_out => PC_Mux_out_sig,
-        pc_out => PC_out_pcreg
+        pc_out => PC_out_pcreg,
+        exp_sig => IF_SIGNALS_IN(0)
     );
 
     Next_PC_Unit_inst : Next_PC_Unit

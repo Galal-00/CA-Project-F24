@@ -182,31 +182,9 @@ def output_to_file(file_path, machine_code):
 if __name__ == '__main__':
     # print debug
 
-    file_path = 'Assembler/testcase1.asm'
+    file_path = 'Assembler/testcase2.asm'
     if os.path.exists(file_path):
         parsed_lines = parse_file(file_path)
-        
-        # for line_type, content in parsed_lines:
-        #     if line_type is not None and content is not None:
-        #         print(line_type, content)
-        
-        # Print the opcode for each instruction
-        # for line_type, content in parsed_lines:
-        #     if line_type == 'INSTRUCTION':
-        #         parts = content.split()
-                
-        #         instruction = parts[0]
-        #         opcode = instruction_to_opcode(content)
-
-        #         operands = parts[1:]
-        #         operands = re.split('[,()]', ' '.join(operands)) if operands else []
-        #         operands = [op.strip() for op in operands if op.strip()]
-        #         if operands:
-        #             operands = [operand_to_binary(operand) for operand in operands]
-        #         print(f"instruction: {instruction}, opcode: {opcode}, operands: {operands}")
-        #     elif line_type == 'ORG':
-        #         print(f"ORG: {content}")
-        # Print the assembled machine code
         output_list = []
         for parsed_line in parsed_lines:
             is_immediate, machine_code = assemble(parsed_line)
@@ -226,7 +204,7 @@ if __name__ == '__main__':
                 else:
                     print(f"{machine_code}")
                     output_list.append(machine_code)
-        output_to_file('Assembler/testcase1.mem', '\n'.join(output_list))
+        output_to_file('Assembler/testcase2.mem', '\n'.join(output_list))
 
 
     else:

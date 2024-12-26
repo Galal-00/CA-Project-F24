@@ -6,6 +6,8 @@ USE ieee.math_real.ALL;
 ENTITY ForwardingUnit IS
     PORT (
         -- input data
+        Rsrc1_EN : IN STD_LOGIC;
+        Rsrc2_EN : IN STD_LOGIC;
         EX_MEM_RegWrite : IN STD_LOGIC;
         MEM_WB_RegWrite : IN STD_LOGIC;
         Rdst_Ex_Mem : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -18,25 +20,25 @@ ENTITY ForwardingUnit IS
         -- output signals
         ForwardA : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         ForwardB : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
-
     );
 END ENTITY ForwardingUnit;
 
 ARCHITECTURE ForwardingUnit_arch OF ForwardingUnit IS
 
 BEGIN
-    ForwardA <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
-        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND NOT (OpCode_Wb = "00110")
+    ForwardA <= "000" WHEN Rsrc1_EN = '1' AND (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
+        "001" WHEN Rsrc1_EN = '1' AND (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND NOT (OpCode_Wb = "00110")
         AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND NOT (OpCode_Mem = "00110"))) ELSE
-        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND OpCode_Mem = "00110") ELSE
-        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND OpCode_Wb = "00110"
+        "010" WHEN Rsrc1_EN = '1' AND (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX AND OpCode_Mem = "00110") ELSE
+        "011" WHEN Rsrc1_EN = '1' AND (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc1_ID_EX AND OpCode_Wb = "00110"
         AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc1_ID_EX)) ELSE
         "100";
-    ForwardB <= "000" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
-        "001" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND NOT (OpCode_Wb = "00110")
+
+    ForwardB <= "000" WHEN Rsrc2_EN = '1' AND (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND NOT (OpCode_Mem = "00110")) ELSE
+        "001" WHEN Rsrc2_EN = '1' AND (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND NOT (OpCode_Wb = "00110")
         AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND NOT (OpCode_Mem = "00110"))) ELSE
-        "010" WHEN (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND OpCode_Mem = "00110") ELSE
-        "011" WHEN (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND OpCode_Wb = "00110"
+        "010" WHEN Rsrc2_EN = '1' AND (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX AND OpCode_Mem = "00110") ELSE
+        "011" WHEN Rsrc2_EN = '1' AND (MEM_WB_RegWrite = '1' AND Rdst_Mem_Wb = Rsrc2_ID_EX AND OpCode_Wb = "00110"
         AND NOT (EX_MEM_RegWrite = '1' AND Rdst_Ex_Mem = Rsrc2_ID_EX)) ELSE
         "100";
 END ARCHITECTURE;

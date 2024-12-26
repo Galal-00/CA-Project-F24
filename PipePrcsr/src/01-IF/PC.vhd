@@ -8,7 +8,9 @@ ENTITY PC IS
         pc_mux_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         pc_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         -- Stall signal to stop the PC from incrementing
-        stall : IN STD_LOGIC
+        stall : IN STD_LOGIC;
+        -- Exception signal
+        exp_sig : IN STD_LOGIC
     );
 END PC;
 
@@ -19,6 +21,9 @@ BEGIN
     BEGIN
         IF clk'EVENT AND clk = '1' THEN
             IF stall = '0' THEN
+                pc_reg <= pc_mux_out;
+            ELSIF stall = '1' AND exp_sig = '1' THEN
+                -- do not stall when the exception signal is high
                 pc_reg <= pc_mux_out;
             END IF;
         END IF;

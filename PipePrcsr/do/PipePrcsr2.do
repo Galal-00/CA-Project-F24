@@ -1,6 +1,6 @@
 vsim work.pipeprcsr
 
-mem load -i D:/intelFPGA_lite/18.1/CompArch/CA-Project-F24/Assembler/testcase1.mem /pipeprcsr/IF_Stage_inst/Instruction_Memory_inst/memory
+mem load -i D:/intelFPGA_lite/18.1/CompArch/CA-Project-F24/Assembler/testcase2.mem /pipeprcsr/IF_Stage_inst/Instruction_Memory_inst/memory
 
 add wave -position insertpoint  \
 sim:/pipeprcsr/RST
@@ -26,4 +26,4 @@ force -freeze sim:/pipeprcsr/CLK 1 0, 0 {500 ps} -r 1ns
 force -freeze sim:/pipeprcsr/IN_DATA FFFF 0
 run 1ns
 force -freeze sim:/pipeprcsr/RST 0 0
-run 30ns
+run 60ns

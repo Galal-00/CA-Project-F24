@@ -30,13 +30,13 @@ ARCHITECTURE Src_Mux_arch OF Src_Mux IS
 
 BEGIN
     Src1 <=  ReadData1 when ALU_Src1 = '0' AND ForwardA(2) = '1' else
-        IMM when ALU_Src1 = '1' AND ForwardA(2) = '1' else 
+        IMM when ALU_Src1 = '1' else 
         Fwd_Ex_Mem when ForwardA = "000" else
         Fwd_Mem_WB when ForwardA = "001" else
         IN_Ex_Mem when ForwardA = "010" else
         IN_Mem_WB;
     Src2 <=  ReadData2 when ALU_Src2 = '0' AND ForwardB(2) = '1' else
-        IMM when ALU_Src2 = '1' AND ForwardB(2) = '1' else 
+        IMM when ALU_Src2 = '1' else 
         Fwd_Ex_Mem when ForwardB = "000" else
         Fwd_Mem_WB when ForwardB = "001" else
         IN_Ex_Mem when ForwardB = "010" else
