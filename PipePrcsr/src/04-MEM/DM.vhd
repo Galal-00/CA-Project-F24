@@ -36,13 +36,13 @@ BEGIN
         IF RST = '1' THEN
             -- memory <= (OTHERS => (OTHERS => '0'));
         ELSIF falling_edge(CLK) THEN
-            IF MEM_READ = '1' THEN
-                DM_DATA <= memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0)))); -- Data Memory Output.
-            ELSIF MEM_WRITE = '1' THEN
+            IF MEM_WRITE = '1' THEN
                 memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0)))) <= DM_DATA_IN_SIG;
             END IF;
         END IF;
     END PROCESS;
+
+    DM_DATA <= memory(to_integer(unsigned(DM_ADDR(11 DOWNTO 0)))); -- Data Memory Output.
 
     DM_ADDR <= ALU_RESULT WHEN DM_ADDR_SIG = '0' ELSE
         SP_INC; -- Data Memory Address. 

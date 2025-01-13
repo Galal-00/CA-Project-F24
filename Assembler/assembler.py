@@ -147,7 +147,11 @@ def assemble(parsed_line):
         elif format_type == InstructionFormat.RDST:
             rdst = operand_to_binary(operands[i])
         elif format_type == InstructionFormat.INDEX:
-            extra = format(int(operands[i]), '02b')
+            if int(operands[i]) != 1:
+                extra = format(int(operands[i]), '02b')
+            else:
+                # If interrupt is INT 1, then set the extra field to 10
+                extra = format(2, '02b')
         elif format_type == InstructionFormat.IMMEDIATE:
             has_immediate = True
             immediate = operand_to_binary(operands[i])

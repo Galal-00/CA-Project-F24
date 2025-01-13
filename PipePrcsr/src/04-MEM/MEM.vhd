@@ -77,6 +77,7 @@ ARCHITECTURE MEM_arch OF MEM IS
             DM_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             -- Data o/p
             PC_INC_MODIFIED : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            RET_RTI_ADDRESS : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             FLAGS_POPPED : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
         );
     END COMPONENT PUSH_POP_FLAGS;
@@ -123,7 +124,6 @@ BEGIN
 
     -- To IF Stage
     IS_RET_RTI <= MEM_SIGNALS(9);
-    RET_RTI_ADDRESS <= DM_DATA;
 
     -- To EX Stage
     UPDATE_FLAGS <= MEM_SIGNALS(5);
@@ -161,6 +161,7 @@ BEGIN
         DM_DATA => DM_DATA,
         -- Data o/p
         PC_INC_MODIFIED => PC_INC_MODIFIED,
+        RET_RTI_ADDRESS => RET_RTI_ADDRESS,
         FLAGS_POPPED => FLAGS_POPPED
     );
 

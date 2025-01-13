@@ -38,8 +38,8 @@
     LDM R0,2
     LDM R1,0
     SUB R1,R1,R0
-    LDM R2,805      # Address of the JZ
-    LDM R3,808      # Address of the RTI
+    LDM R2,809      # Address of the JZ
+    LDM R3,80C      # Address of the RTI
     JZ R3           # For loop that should execute 2 times
     INC R1,R1
     JMP R2
@@ -49,8 +49,8 @@
 .ORG 0A00
     LDM R0,1
     LDM R1,2
-    LDM R2,0A04      # Address of the JZ
-    LDM R3,0A07      # Address of the RTI
+    LDM R2,0A08      # Address of the JN
+    LDM R3,0A0B      # Address of the RTI
     JN R3            # For loop that should execute 3 times
     SUB R1,R1,R0
     JMP R2
@@ -69,7 +69,7 @@
 	
 # Function
 .ORG 300
-    LDM R5,30B      # RET address
+    LDM R5,313      # RET address
     LDM R6,300      # Start of function address
     LDM R0,5        # Some Value
     PUSH R0

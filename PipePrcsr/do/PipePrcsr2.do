@@ -26,4 +26,4 @@ force -freeze sim:/pipeprcsr/CLK 1 0, 0 {500 ps} -r 1ns
 force -freeze sim:/pipeprcsr/IN_DATA FFFF 0
 run 1ns
 force -freeze sim:/pipeprcsr/RST 0 0
-run 60ns
+run 112ns
